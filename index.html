@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The ultimate Travis Scott fan website featuring biography, music, tours, and more">
+    <meta name="keywords" content="Travis Scott, La Flame, Astroworld, Utopia, Cactus Jack, Hip Hop">
+    <title>Travis Scott | Official Fan Website</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="nav-container">
+            <div class="logo">
+                <h1>TRAVIS SCOTT</h1>
+            </div>
+            <button class="mobile-menu" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#biography">Biography</a></li>
+                <li><a href="#music">Music</a></li>
+                <li><a href="#tours">Tours</a></li>
+                <li><a href="#ventures">Ventures</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div id="model-container"></div>
+            <div class="hero-content">
+                <h1 class="animate-text">TRAVIS SCOTT</h1>
+                <p class="subtitle">Rapper • Producer • Icon</p>
+                <div class="social-links">
+                    <a href="https://instagram.com/travisscott" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                    <a href="https://twitter.com/trvisXX" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+                    <a href="https://youtube.com/travisscott" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
+                    <a href="https://spotify.com/artist/travisscott" target="_blank" rel="noopener"><i class="fab fa-spotify"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="biography" class="section">
+            <div class="container">
+                <h2>Biography</h2>
+                <div class="bio-grid">
+                    <div class="bio-image-container">
+                        <div class="bio-image">
+                            <img src="https://people.com/thmb/de89tSU-qVb42g5RWDsKSguiGYE=/4000x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(999x0:1001x2):format(webp)/travis-scott-parents-6-e3a02b3e3e6e4dd6920a541bf6735707.jpg" alt="Travis Scott with his parents" loading="lazy">
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <h4>2012</h4>
+                                <p>Signs first major record deal</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>2015</h4>
+                                <p>Releases debut album "Rodeo"</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>2018</h4>
+                                <p>"Astroworld" becomes cultural phenomenon</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>2020</h4>
+                                <p>McDonald's & Fortnite collaborations</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>2022</h4>
+                                <p>Launches Cactus Jack Foundation</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>2023</h4>
+                                <p>Releases "Utopia"</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bio-content">
+                        <h3>Early Life</h3>
+                        <p>Jacques Bermon Webster II, known professionally as Travis Scott, was born on April 30, 1991, in Houston, Texas. Raised in Missouri City by his parents Wanda and Jacques Webster Sr., he spent his early years with his grandmother Sealie in Houston's Sunnyside neighborhood.</p>
+                        
+                        <h3>Musical Roots</h3>
+                        <p>Travis inherited his musical talent from his father, Jacques Sr., who played piano and drums, and his grandfather, who was a jazz composer. His father bought him his first drum set at age 3, sparking his passion for music. His mother Wanda influenced his fashion sense, often dressing him in premium brands and sharing her fashion magazines.</p>
+                        
+                        <h3>Family Life</h3>
+                        <p>Scott's relationship with Kylie Jenner began in 2017, and they welcomed their daughter Stormi Webster in February 2018. The couple has since welcomed their second child, a son, in 2022. Today, Travis runs the Cactus Jack Foundation with his parents, supporting youth through education and creative resources.</p>
+                        
+                        <a href="https://people.com/all-about-travis-scott-parents-8425221" class="stream-btn" target="_blank" rel="noopener">Read Full Family Story</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="music" class="section dark">
+            <div class="container">
+                <h2>Discography</h2>
+                <div class="music-player">
+                    <iframe src="https://open.spotify.com/embed/artist/0Y5tJX1MQlPlqiwlOH1tJY" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                </div>
+                <div class="albums-grid">
+                    <div class="album-card">
+                        <img src="https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Utopia-CD-1500.png?v=1698377013&width=1445" alt="Utopia Album Cover" loading="lazy">
+                        <div class="album-info">
+                            <h3>Utopia (2023)</h3>
+                            <a href="https://open.spotify.com/album/0387OE4TJJGaH1M8sKL1K6" class="stream-btn" target="_blank">Stream Now</a>
+                        </div>
+                    </div>
+                    <div class="album-card">
+                        <img src="https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Astroworld-CD-1500.png?v=1698376375&width=1445" alt="Astroworld Album Cover" loading="lazy">
+                        <div class="album-info">
+                            <h3>Astroworld (2018)</h3>
+                            <a href="https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I" class="stream-btn" target="_blank">Stream Now</a>
+                        </div>
+                    </div>
+                    <!-- Add more albums -->
+                </div>
+            </div>
+        </section>
+
+        <section id="ventures" class="section">
+            <div class="container">
+                <h2>Business Ventures</h2>
+                <div class="ventures-grid">
+                    <a href="https://dawntown.co.in/collections/travis-scott-x-nike?srsltid=AfmBOorIYfcEgoFX5gcdrEsLbiRywBkulSkuC9fBctuiBOTGu7kkgJWu" class="venture-card" target="_blank" rel="noopener">
+                        <img src="https://staticg.sportskeeda.com/editor/2022/05/7e29b-16531528939797-1920.jpg" alt="Nike Collaboration" loading="lazy">
+                        <h3>Nike</h3>
+                        <p>Multiple successful sneaker collaborations including the Air Jordan 1 and Air Force 1.</p>
+                    </a>
+                    <a href="https://corporate.mcdonalds.com/corpmcd/our-stories/article/travis-scott-embark.html" class="venture-card" target="_blank" rel="noopener">
+                        <img src="https://img.businessoffashion.com/resizer/v2/AQ4QUQTUMRCZLLIDP3F4EMVRBQ.jpg?auth=a9a0573e92c37853a7676c1de69b09112dc64a30b14f7cdffd8cf3977e82bdc0&width=1440" alt="McDonald's Collaboration" loading="lazy">
+                        <h3>McDonald's</h3>
+                        <p>The Travis Scott Meal became a cultural phenomenon in 2020.</p>
+                    </a>
+                    <a href="https://www.epicgames.com/fortnite/en-US/astronomical" class="venture-card" target="_blank" rel="noopener">
+                        <img src="https://img.youtube.com/vi/wYeFAlVC8qU/maxresdefault.jpg" alt="Fortnite Collaboration" loading="lazy">
+                        <h3>Fortnite</h3>
+                        <p>Revolutionary virtual concert experience during the pandemic.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="section dark">
+            <div class="container">
+                <h2>Gallery</h2>
+                <div class="gallery-grid">
+                    <!-- Gallery images will be added dynamically via JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <div class="container">
+                <h2>Stay Updated</h2>
+                <div class="contact-grid">
+                    <div class="newsletter-form">
+                        <h3>Join the Cactus Jack Family</h3>
+                        <form id="newsletter-form">
+                            <input type="email" placeholder="Your email address" required>
+                            <button type="submit" class="btn">Subscribe</button>
+                        </form>
+                    </div>
+                    <div class="contact-form">
+                        <h3>Get in Touch</h3>
+                        <form id="contact-form">
+                            <input type="text" placeholder="Name" required>
+                            <input type="email" placeholder="Email" required>
+                            <textarea placeholder="Message" required></textarea>
+                            <button type="submit" class="btn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#biography">Biography</a></li>
+                        <li><a href="#music">Music</a></li>
+                        <li><a href="#ventures">Ventures</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="https://instagram.com/travisscott" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                        <a href="https://twitter.com/trvisXX" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+                        <a href="https://youtube.com/travisscott" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
+                        <a href="https://spotify.com/artist/travisscott" target="_blank" rel="noopener"><i class="fab fa-spotify"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Travis Scott Fan Website. This is a fan-made website for educational purposes.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/3d-model.js"></script>
+</body>
+</html> 
