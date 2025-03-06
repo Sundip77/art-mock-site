@@ -429,14 +429,14 @@ h2::after {
     text-align: center;
     width: fit-content;
     font-size: 1.1rem;
-    color: var(--accent-color);
+    color: #2ecc71;
     transition: all 0.3s ease;
     text-decoration: none;
     font-weight: 500;
 }
 
 .bio-link:hover {
-    color: #ff6b00;
+    color: #27ae60;
     transform: translateY(-2px);
 }
 
