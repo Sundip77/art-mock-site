@@ -246,6 +246,28 @@ let isAnimating = false;
 // YouTube video controls for Tours section
 let youtubeIframe;
 
+// Hero section animations
+function initHeroAnimations() {
+    const socialLinks = document.querySelectorAll('.social-links a');
+    const heroButtons = document.querySelectorAll('.hero-btn');
+    
+    // Stagger animation for social links
+    socialLinks.forEach((link, index) => {
+        setTimeout(() => {
+            link.style.opacity = '1';
+            link.style.transform = 'translateY(0)';
+        }, 200 * index);
+    });
+    
+    // Stagger animation for buttons
+    heroButtons.forEach((button, index) => {
+        setTimeout(() => {
+            button.style.opacity = '1';
+            button.style.transform = 'translateY(0)';
+        }, 500 + (200 * index));
+    });
+}
+
 // Initialize everything when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize mobile menu
@@ -341,6 +363,8 @@ if (albumsGrid) {
     
     // Setup intersection observers for animations
     setupAnimationObservers();
+
+    initHeroAnimations();
 });
 
 // Function to set up intersection observers for sections with videos
