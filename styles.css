@@ -440,6 +440,23 @@ h2::after {
     transform: translateY(-2px);
 }
 
+/* 3D Cassette Model Container */
+.bio-model-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 30px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.bio-model-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
 /* Timeline grid layout */
 .timeline-grid {
     display: flex;
