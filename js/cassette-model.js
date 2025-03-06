@@ -52,109 +52,97 @@ function initCassetteModel() {
     spotLight.distance = 200;
     cassetteScene.add(spotLight);
     
-    // Create a simple cassette model since we're having issues with loading external models
-    createSimpleCassetteModel();
+    // Create Cactus Jack logo model
+    createCactusJackModel();
     
     // Start animation
     animateCassette();
 }
 
-function createSimpleCassetteModel() {
-    // Create a group to hold all cassette parts
+function createCactusJackModel() {
+    // Create a group to hold all model parts
     cassetteModel = new THREE.Group();
     
     // Create materials
-    const bodyMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0x333333, 
-        specular: 0x111111,
+    const baseMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0x111111, 
+        specular: 0x222222,
         shininess: 30
     });
     
-    const tapeMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0x111111, 
-        specular: 0x222222,
-        shininess: 50
+    const accentMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0xff6b00, 
+        specular: 0xffaa77,
+        shininess: 50,
+        emissive: 0x441100,
+        emissiveIntensity: 0.3
     });
     
-    const labelMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0xffffff,
-        specular: 0x444444,
-        shininess: 10
-    });
+    // Create base circle
+    const baseGeometry = new THREE.CylinderGeometry(2, 2, 0.2, 32);
+    const base = new THREE.Mesh(baseGeometry, baseMaterial);
+    base.rotation.x = Math.PI / 2;
+    base.castShadow = true;
+    base.receiveShadow = true;
+    cassetteModel.add(base);
     
-    // Create cassette body
-    const bodyGeometry = new THREE.BoxGeometry(3, 0.3, 2);
-    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-    body.castShadow = true;
-    body.receiveShadow = true;
-    cassetteModel.add(body);
+    // Create Cactus Jack smiley face
     
-    // Create label
-    const labelGeometry = new THREE.BoxGeometry(2.5, 0.05, 1.5);
-    const label = new THREE.Mesh(labelGeometry, labelMaterial);
-    label.position.y = 0.18;
-    label.castShadow = true;
-    label.receiveShadow = true;
-    cassetteModel.add(label);
+    // Face outline
+    const faceGeometry = new THREE.TorusGeometry(1.5, 0.2, 16, 32);
+    const face = new THREE.Mesh(faceGeometry, accentMaterial);
+    face.position.z = 0.15;
+    face.castShadow = true;
+    face.receiveShadow = true;
+    cassetteModel.add(face);
     
-    // Create tape reels
-    const reelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
+    // Left eye (X shape)
+    const leftEyeGroup = new THREE.Group();
+    leftEyeGroup.position.set(-0.6, 0, 0.2);
     
-    const leftReel = new THREE.Mesh(reelGeometry, tapeMaterial);
-    leftReel.position.set(-0.8, 0, 0);
-    leftReel.rotation.x = Math.PI / 2;
-    leftReel.castShadow = true;
-    leftReel.receiveShadow = true;
-    cassetteModel.add(leftReel);
+    const leftEyeLine1Geometry = new THREE.BoxGeometry(0.5, 0.1, 0.1);
+    leftEyeLine1Geometry.rotateZ(Math.PI / 4);
+    const leftEyeLine1 = new THREE.Mesh(leftEyeLine1Geometry, accentMaterial);
+    leftEyeGroup.add(leftEyeLine1);
     
-    const rightReel = new THREE.Mesh(reelGeometry, tapeMaterial);
-    rightReel.position.set(0.8, 0, 0);
-    rightReel.rotation.x = Math.PI / 2;
-    rightReel.castShadow = true;
-    rightReel.receiveShadow = true;
-    cassetteModel.add(rightReel);
+    const leftEyeLine2Geometry = new THREE.BoxGeometry(0.5, 0.1, 0.1);
+    leftEyeLine2Geometry.rotateZ(-Math.PI / 4);
+    const leftEyeLine2 = new THREE.Mesh(leftEyeLine2Geometry, accentMaterial);
+    leftEyeGroup.add(leftEyeLine2);
     
-    // Create tape windows
-    const windowGeometry = new THREE.BoxGeometry(0.6, 0.1, 0.8);
-    const windowMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0x666666, 
-        transparent: true,
-        opacity: 0.7,
-        specular: 0x999999,
-        shininess: 100
-    });
+    cassetteModel.add(leftEyeGroup);
     
-    const leftWindow = new THREE.Mesh(windowGeometry, windowMaterial);
-    leftWindow.position.set(-0.8, 0.2, 0);
-    leftWindow.castShadow = true;
-    leftWindow.receiveShadow = true;
-    cassetteModel.add(leftWindow);
+    // Right eye (X shape)
+    const rightEyeGroup = new THREE.Group();
+    rightEyeGroup.position.set(0.6, 0, 0.2);
     
-    const rightWindow = new THREE.Mesh(windowGeometry, windowMaterial);
-    rightWindow.position.set(0.8, 0.2, 0);
-    rightWindow.castShadow = true;
-    rightWindow.receiveShadow = true;
-    cassetteModel.add(rightWindow);
+    const rightEyeLine1Geometry = new THREE.BoxGeometry(0.5, 0.1, 0.1);
+    rightEyeLine1Geometry.rotateZ(Math.PI / 4);
+    const rightEyeLine1 = new THREE.Mesh(rightEyeLine1Geometry, accentMaterial);
+    rightEyeGroup.add(rightEyeLine1);
     
-    // Since TextGeometry requires a font that we may not have loaded,
-    // let's create a simple plane with a texture instead
-    const textMaterial = new THREE.MeshPhongMaterial({ 
-        color: 0xff6b00,
-        specular: 0x444444,
-        shininess: 10
-    });
+    const rightEyeLine2Geometry = new THREE.BoxGeometry(0.5, 0.1, 0.1);
+    rightEyeLine2Geometry.rotateZ(-Math.PI / 4);
+    const rightEyeLine2 = new THREE.Mesh(rightEyeLine2Geometry, accentMaterial);
+    rightEyeGroup.add(rightEyeLine2);
     
-    const textPlane = new THREE.PlaneGeometry(2, 0.4);
-    const textMesh = new THREE.Mesh(textPlane, textMaterial);
-    textMesh.position.set(0, 0.21, 0);
-    textMesh.rotation.x = -Math.PI / 2;
-    cassetteModel.add(textMesh);
+    cassetteModel.add(rightEyeGroup);
+    
+    // Mouth (downward curve)
+    const mouthGeometry = new THREE.TorusGeometry(0.8, 0.1, 16, 16, Math.PI);
+    const mouth = new THREE.Mesh(mouthGeometry, accentMaterial);
+    mouth.position.z = 0.2;
+    mouth.position.y = -0.5;
+    mouth.rotation.x = Math.PI;
+    mouth.castShadow = true;
+    mouth.receiveShadow = true;
+    cassetteModel.add(mouth);
     
     // Add the model to the scene
     cassetteScene.add(cassetteModel);
     
-    // Scale the model to be larger
-    cassetteModel.scale.set(1.5, 1.5, 1.5);
+    // Scale the model
+    cassetteModel.scale.set(1.2, 1.2, 1.2);
 }
 
 function animateCassette() {
