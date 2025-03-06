@@ -411,33 +411,32 @@ h2::after {
 /* Gallery Section */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-top: 2rem;
-    position: relative;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+    perspective: 1000px;
+    transform-style: preserve-3d;
 }
 
 .gallery-grid img {
     width: 100%;
-    height: 350px;
+    height: 300px;
     object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    opacity: 0;
-    transition: opacity 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    opacity: 1; /* Ensure images are visible */
+    display: block;
 }
 
 .gallery-grid img.wide-image {
-    grid-column: 1 / -1;
-    height: 500px;
-    margin-bottom: 1rem;
-    opacity: 0;
+    grid-column: span 2;
+    height: 400px;
 }
 
 .gallery-grid img:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* Make sure the gallery section has proper spacing */
@@ -1079,4 +1078,14 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 .subtitle, .tour-date, .album-year {
     font-family: var(--travis-mono);
     letter-spacing: 1px;
+}
+
+/* Logo link styles */
+.logo a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.logo a:hover {
+    color: var(--accent-color);
 } 

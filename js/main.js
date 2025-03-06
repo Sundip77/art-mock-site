@@ -332,6 +332,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 1500);
     }
+
+    // Initialize gallery with images
+    const galleryGrid = document.querySelector('.gallery-grid');
+    if (galleryGrid) {
+        galleryGrid.innerHTML = '';
+        console.log('Initializing gallery grid');
+
+        // Add images to gallery
+        galleryImages.forEach((image, index) => {
+            const img = document.createElement('img');
+            img.src = image.url;
+            img.alt = image.alt;
+            
+            if (image.isWide) {
+                img.classList.add('wide-image');
+                console.log('Added wide image:', image.url);
+            }
+            
+            // Add load event listener
+            img.onload = function() {
+                img.style.opacity = '1';
+                console.log('Image loaded:', image.url);
+            };
+            
+            // Add error handler
+            img.onerror = function() {
+                console.error('Failed to load image:', image.url);
+                // Try to reload the image or use a fallback
+                setTimeout(() => {
+                    img.src = image.url + '?' + new Date().getTime();
+                }, 1000);
+            };
+            
+            galleryGrid.appendChild(img);
+        });
+    }
 });
 
 // Function to set up intersection observers for sections with videos
