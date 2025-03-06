@@ -721,12 +721,13 @@ function initParallaxEffect() {
             // Calculate how far the container is through the viewport
             const percentageThrough = (windowHeight - containerTop) / (windowHeight + containerHeight);
             
-            // Calculate the offset for the image (20% of its height)
+            // Calculate the offset for the image (50% of its height for more dramatic effect)
             const maxOffset = parallaxImage.offsetHeight - containerHeight;
             const newOffset = maxOffset * percentageThrough;
             
             // Apply the transform with a smooth transition
-            parallaxImage.style.transform = `translateY(-${newOffset}px)`;
+            // Use a more dramatic effect by multiplying the offset
+            parallaxImage.style.transform = `translateY(-${newOffset * 1.5}px)`;
         }
     }
     
@@ -739,7 +740,7 @@ function initParallaxEffect() {
     // Initial calculation
     calculatePositions();
     
-    console.log('Parallax effect initialized for gallery');
+    console.log('Enhanced parallax effect initialized for gallery');
 }
 
 // Initialize gallery with animations
