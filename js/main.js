@@ -235,7 +235,7 @@ const albums = [
         year: '2014',
         cover: 'https://i.ibb.co/nsdKrpCM/travis-scott-vinyl-days-before-rodeo-fotor-bg-remover-2025030503355.png',
         spotifyLink: 'https://open.spotify.com/album/3mqQBxpuABnC63Hl0e6tiR',
-        videoId: 'r2hKhTVaS1g' // Days Before Rodeo video - updated
+        videoId: 'sS8ELauHmGM' // Days Before Rodeo video - updated with new link
     }
 ];
 
@@ -573,11 +573,14 @@ function updateBackgroundVideo(index, shouldAutoplay) {
     if (!albumBgVideo) return;
     
     // Create YouTube iframe for background
+    // Add start parameter for Days Before Rodeo video to start at 22 seconds
+    const startTime = album.title === 'Days Before Rodeo' ? '&start=22' : '';
+    
     albumBgVideo.innerHTML = `
         <iframe 
             width="100%" 
             height="100%" 
-            src="https://www.youtube.com/embed/${album.videoId}?autoplay=${shouldAutoplay ? '1' : '0'}&mute=${globalMuted ? '1' : '0'}&loop=1&playlist=${album.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
+            src="https://www.youtube.com/embed/${album.videoId}?autoplay=${shouldAutoplay ? '1' : '0'}&mute=${globalMuted ? '1' : '0'}&loop=1&playlist=${album.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1${startTime}" 
             title="${album.title} Background" 
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
