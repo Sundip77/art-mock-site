@@ -136,45 +136,55 @@ const galleryImages = [
     }
 ];
 
-// Album Data
+// Album Data with background videos
 const albums = [
     {
         title: 'UTOPIA',
         year: '2023',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Utopia-CD-1500.png?v=1698377013&width=1100',
-        spotifyLink: 'https://open.spotify.com/album/0387OE4TJJGaH1M8sKL1K6'
+        spotifyLink: 'https://open.spotify.com/album/0387OE4TJJGaH1M8sKL1K6',
+        videoId: 'FRjQH1kLjEc' // UTOPIA video
     },
     {
         title: 'ASTROWORLD',
         year: '2018',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Astroworld-CD-1500.png?v=1698376375&width=1100',
-        spotifyLink: 'https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I'
+        spotifyLink: 'https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I',
+        videoId: '68gLDQlVdQk' // ASTROWORLD video
     },
     {
         title: 'Birds in the Trap Sing McKnight',
         year: '2016',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Birds-CD-1500.png?v=1698376888&width=1445',
-        spotifyLink: 'https://open.spotify.com/album/42WVQWuf1teDysXiOupIZt'
+        spotifyLink: 'https://open.spotify.com/album/42WVQWuf1teDysXiOupIZt',
+        videoId: 'mHMvbGxTdSM' // Birds video
     },
     {
         title: 'Rodeo',
         year: '2015',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Rodeo-Deluxe-1500.png?v=1699920600&width=1445',
-        spotifyLink: 'https://open.spotify.com/album/4PWBTB6NYxuxQa5c2ROUZe'
+        spotifyLink: 'https://open.spotify.com/album/4PWBTB6NYxuxQa5c2ROUZe',
+        videoId: 'Kl5B6MBAntI' // Rodeo video
     },
     {
         title: 'Owl Pharaoh',
         year: '2013',
         cover: 'https://media-hosting.imagekit.io//9d721a6cd4d84392/s-l1600-removebg-preview.png?Expires=1835725694&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=EjWG6cDHD0YwTCRiAl4PgGHTDu1zzGauE82T~BPHoZmv3eYT7bfx403E0CYLi3pBwtlkSbRKDWgFSR0Hm0ukf7XjP96kRjbVRbobUdnFyUqpLLgeixS~OIXEL7UpfRIwH138691QZi8wlbnRz52Kz0mN3UYrrCMfiMplOy8bCNHiPRO4axFuwOkmR1jTSR2K9CnrcuUF4VY3DEQzAblrx7eTZEjYSJsm~J34kMYZQtRu1EUexpXk51IBXM4aTGFeOspggwt3SEq-ZaTBLrPS3O3~~Kt-SzjZ1sOx-I0VX~lMd-IHuDSNFPFlf8zXUNFBXLD2bmD0mZoa7LwpyYRHhA__',
-        spotifyLink: 'https://open.spotify.com/album/687cZJR45JO7jhk1LHIbgq'
+        spotifyLink: 'https://open.spotify.com/album/687cZJR45JO7jhk1LHIbgq',
+        videoId: 'qRrXGi_cDM0' // Owl Pharaoh video
     },
     {
         title: 'Days Before Rodeo',
         year: '2014',
         cover: 'https://i.ibb.co/nsdKrpCM/travis-scott-vinyl-days-before-rodeo-fotor-bg-remover-2025030503355.png',
-        spotifyLink: 'https://open.spotify.com/album/3mqQBxpuABnC63Hl0e6tiR'
+        spotifyLink: 'https://open.spotify.com/album/3mqQBxpuABnC63Hl0e6tiR',
+        videoId: 'BuNBLjJzRoo' // Days Before Rodeo video
     }
 ];
+
+// Album Carousel Variables
+let currentAlbumIndex = 0;
+let isAnimating = false;
 
 // YouTube video controls for Tours section
 let youtubeIframe;
@@ -379,32 +389,219 @@ document.addEventListener('DOMContentLoaded', function() {
     
     handleScrollAnimation();
 
-    // Initialize albums
+    // Initialize album carousel
+    initAlbumCarousel();
+
+    // Initialize albums (original code - will be replaced by carousel)
     const albumsGrid = document.querySelector('.albums-grid');
     if (albumsGrid) {
-        albumsGrid.innerHTML = '';
+        // This section is now handled by the carousel
+        // The original code is kept for reference but won't execute
+    }
+});
+
+// Function to initialize the album carousel
+function initAlbumCarousel() {
+    const carouselTrack = document.querySelector('.album-carousel-track');
+    const albumBgVideo = document.getElementById('album-bg-video');
+    const albumTitle = document.querySelector('.album-title');
+    const albumYear = document.querySelector('.album-year');
+    const albumLink = document.querySelector('.album-link');
+    const leftArrow = document.querySelector('.left-arrow');
+    const rightArrow = document.querySelector('.right-arrow');
+    
+    if (!carouselTrack || !albumBgVideo) return;
+    
+    // Clear any existing content
+    carouselTrack.innerHTML = '';
+    
+    // Create album items
+    albums.forEach((album, index) => {
+        const albumItem = document.createElement('div');
+        albumItem.className = 'album-item';
+        albumItem.dataset.index = index;
         
-        albums.forEach(album => {
-            const albumCard = document.createElement('div');
-            albumCard.className = 'album-card';
-            
-            albumCard.innerHTML = `
-                <img src="${album.cover}" alt="${album.title}" loading="lazy">
-                <div class="album-info">
-                    <h3>${album.title}</h3>
-                    <a href="${album.spotifyLink}" class="stream-btn" target="_blank" rel="noopener">Stream Now</a>
-                </div>
-            `;
-            
-            // Add error handling for images
-            const img = albumCard.querySelector('img');
-            img.onerror = function() {
-                console.error('Error loading album image:', img.src);
-                // Fallback image if the original fails to load
-                img.src = 'https://via.placeholder.com/60x60/222222/ffd700?text=TS';
-            };
-            
-            albumsGrid.appendChild(albumCard);
+        if (index === currentAlbumIndex) {
+            albumItem.classList.add('active');
+        } else if (index === getPrevIndex(currentAlbumIndex)) {
+            albumItem.classList.add('prev');
+        } else if (index === getNextIndex(currentAlbumIndex)) {
+            albumItem.classList.add('next');
+        }
+        
+        albumItem.innerHTML = `<img src="${album.cover}" alt="${album.title}" loading="lazy">`;
+        
+        // Add click event to album item
+        albumItem.addEventListener('click', () => {
+            if (!isAnimating && index !== currentAlbumIndex) {
+                navigateToAlbum(index);
+            }
+        });
+        
+        carouselTrack.appendChild(albumItem);
+    });
+    
+    // Set up navigation arrows
+    if (leftArrow) {
+        leftArrow.addEventListener('click', () => {
+            if (!isAnimating) {
+                navigateToAlbum(getPrevIndex(currentAlbumIndex));
+            }
         });
     }
-}); 
+    
+    if (rightArrow) {
+        rightArrow.addEventListener('click', () => {
+            if (!isAnimating) {
+                navigateToAlbum(getNextIndex(currentAlbumIndex));
+            }
+        });
+    }
+    
+    // Set up keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (isElementInViewport(carouselTrack)) {
+            if (e.key === 'ArrowLeft' && !isAnimating) {
+                navigateToAlbum(getPrevIndex(currentAlbumIndex));
+            } else if (e.key === 'ArrowRight' && !isAnimating) {
+                navigateToAlbum(getNextIndex(currentAlbumIndex));
+            }
+        }
+    });
+    
+    // Set up mouse move navigation
+    const albumCarousel = document.querySelector('.album-carousel');
+    if (albumCarousel) {
+        albumCarousel.addEventListener('mousemove', (e) => {
+            const rect = albumCarousel.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+            
+            // If mouse is in the left 30% of the carousel
+            if (x < width * 0.3) {
+                albumCarousel.style.cursor = 'url("https://img.icons8.com/ios-filled/50/000000/long-arrow-left.png"), w-resize';
+            } 
+            // If mouse is in the right 30% of the carousel
+            else if (x > width * 0.7) {
+                albumCarousel.style.cursor = 'url("https://img.icons8.com/ios-filled/50/000000/long-arrow-right.png"), e-resize';
+            } 
+            // If mouse is in the middle 40% of the carousel
+            else {
+                albumCarousel.style.cursor = 'default';
+            }
+        });
+        
+        albumCarousel.addEventListener('click', (e) => {
+            if (isAnimating) return;
+            
+            const rect = albumCarousel.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+            
+            // If click is in the left 30% of the carousel
+            if (x < width * 0.3) {
+                navigateToAlbum(getPrevIndex(currentAlbumIndex));
+            } 
+            // If click is in the right 30% of the carousel
+            else if (x > width * 0.7) {
+                navigateToAlbum(getNextIndex(currentAlbumIndex));
+            }
+        });
+    }
+    
+    // Initialize with the first album
+    updateAlbumDetails(currentAlbumIndex);
+    updateBackgroundVideo(currentAlbumIndex);
+}
+
+// Function to navigate to a specific album
+function navigateToAlbum(index) {
+    if (isAnimating || index === currentAlbumIndex) return;
+    
+    isAnimating = true;
+    
+    const albumItems = document.querySelectorAll('.album-item');
+    const prevIndex = currentAlbumIndex;
+    currentAlbumIndex = index;
+    
+    // Update classes for all album items
+    albumItems.forEach((item, i) => {
+        // Remove all position classes
+        item.classList.remove('active', 'prev', 'next');
+        
+        // Add appropriate class based on new index
+        if (i === currentAlbumIndex) {
+            item.classList.add('active');
+        } else if (i === getPrevIndex(currentAlbumIndex)) {
+            item.classList.add('prev');
+        } else if (i === getNextIndex(currentAlbumIndex)) {
+            item.classList.add('next');
+        }
+    });
+    
+    // Update album details and background
+    updateAlbumDetails(currentAlbumIndex);
+    updateBackgroundVideo(currentAlbumIndex);
+    
+    // Reset animation flag after transition completes
+    setTimeout(() => {
+        isAnimating = false;
+    }, 500);
+}
+
+// Function to update album details
+function updateAlbumDetails(index) {
+    const album = albums[index];
+    const albumTitle = document.querySelector('.album-title');
+    const albumYear = document.querySelector('.album-year');
+    const albumLink = document.querySelector('.album-link');
+    
+    if (albumTitle) albumTitle.textContent = album.title;
+    if (albumYear) albumYear.textContent = album.year;
+    if (albumLink) {
+        albumLink.href = album.spotifyLink;
+        albumLink.textContent = 'Stream Now';
+    }
+}
+
+// Function to update background video
+function updateBackgroundVideo(index) {
+    const album = albums[index];
+    const albumBgVideo = document.getElementById('album-bg-video');
+    
+    if (!albumBgVideo) return;
+    
+    // Create YouTube iframe for background
+    albumBgVideo.innerHTML = `
+        <iframe 
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/${album.videoId}?autoplay=1&mute=${globalMuted ? '1' : '0'}&loop=1&playlist=${album.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
+            title="${album.title} Background" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    `;
+}
+
+// Helper function to get previous index with wrap-around
+function getPrevIndex(currentIndex) {
+    return (currentIndex - 1 + albums.length) % albums.length;
+}
+
+// Helper function to get next index with wrap-around
+function getNextIndex(currentIndex) {
+    return (currentIndex + 1) % albums.length;
+}
+
+// Helper function to check if element is in viewport
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+} 

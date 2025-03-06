@@ -157,25 +157,38 @@
         <section id="music" class="section dark">
             <div class="container">
                 <h2>Discography</h2>
+                
+                <!-- Album Carousel UI -->
+                <div class="album-carousel-container">
+                    <div class="album-navigation">
+                        <button class="nav-arrow left-arrow" aria-label="Previous album">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="album-carousel">
+                            <div class="album-carousel-track">
+                                <!-- Albums will be loaded here via JavaScript -->
+                            </div>
+                        </div>
+                        <button class="nav-arrow right-arrow" aria-label="Next album">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="album-background">
+                        <!-- Background video will change based on selected album -->
+                        <div id="album-bg-video"></div>
+                    </div>
+                    
+                    <div class="album-details">
+                        <h3 class="album-title"></h3>
+                        <p class="album-year"></p>
+                        <a href="#" class="stream-btn album-link" target="_blank" rel="noopener">Stream Now</a>
+                    </div>
+                </div>
+                
+                <!-- Spotify Player -->
                 <div class="music-player">
                     <iframe src="https://open.spotify.com/embed/artist/0Y5tJX1MQlPlqiwlOH1tJY" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                </div>
-                <div class="albums-grid">
-                    <div class="album-card">
-                        <img src="https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Utopia-CD-1500.png?v=1698377013&width=1445" alt="Utopia Album Cover" loading="lazy">
-                        <div class="album-info">
-                            <h3>Utopia (2023)</h3>
-                            <a href="https://open.spotify.com/album/0387OE4TJJGaH1M8sKL1K6" class="stream-btn" target="_blank">Stream Now</a>
-                        </div>
-                    </div>
-                    <div class="album-card">
-                        <img src="https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Astroworld-CD-1500.png?v=1698376375&width=1445" alt="Astroworld Album Cover" loading="lazy">
-                        <div class="album-info">
-                            <h3>Astroworld (2018)</h3>
-                            <a href="https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I" class="stream-btn" target="_blank">Stream Now</a>
-                        </div>
-                    </div>
-                    <!-- Add more albums -->
                 </div>
             </div>
         </section>
