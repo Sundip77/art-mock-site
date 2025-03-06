@@ -199,8 +199,8 @@ const albums = [
         title: 'UTOPIA',
         year: '2023',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Utopia-CD-1500.png?v=1698377013&width=1100',
-        spotifyLink: 'spotify:album:0387OE4TJJGaH1M8sKL1K6',
-        spotifyWebLink: 'https://open.spotify.com/album/0387OE4TJJGaH1M8sKL1K6?si=Wd9-Qs-eTLCZXbKQRYUYmA',
+        spotifyLink: 'spotify:album:18NOKLkZETa4sWwLMIm0UZ',
+        spotifyWebLink: 'https://open.spotify.com/album/18NOKLkZETa4sWwLMIm0UZ?si=niCwOFO-Q_qz9eSuRs4rHQ',
         videoId: 'FRjQH1kLjEc' // UTOPIA video
     },
     {
@@ -223,24 +223,24 @@ const albums = [
         title: 'Rodeo',
         year: '2015',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Rodeo-Deluxe-1500.png?v=1699920600&width=1445',
-        spotifyLink: 'spotify:album:4PWBTB6NYxuxQa5c2ROUZe',
-        spotifyWebLink: 'https://open.spotify.com/album/4PWBTB6NYxuxQa5c2ROUZe?si=Wd9-Qs-eTLCZXbKQRYUYmA',
+        spotifyLink: 'spotify:album:4PWBTB6NYSKQwfo79I3prg',
+        spotifyWebLink: 'https://open.spotify.com/album/4PWBTB6NYSKQwfo79I3prg?si=PCBEW6_FTGKUtt4W9s75Gg',
         videoId: 'KnZ8h3MRuYg' // Rodeo video - updated with new link
     },
     {
         title: 'Owl Pharaoh',
         year: '2013',
         cover: 'https://media-hosting.imagekit.io//9d721a6cd4d84392/s-l1600-removebg-preview.png?Expires=1835725694&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=EjWG6cDHD0YwTCRiAl4PgGHTDu1zzGauE82T~BPHoZmv3eYT7bfx403E0CYLi3pBwtlkSbRKDWgFSR0Hm0ukf7XjP96kRjbVRbobUdnFyUqpLLgeixS~OIXEL7UpfRIwH138691QZi8wlbnRz52Kz0mN3UYrrCMfiMplOy8bCNHiPRO4axFuwOkmR1jTSR2K9CnrcuUF4VY3DEQzAblrx7eTZEjYSJsm~J34kMYZQtRu1EUexpXk51IBXM4aTGFeOspggwt3SEq-ZaTBLrPS3O3~~Kt-SzjZ1sOx-I0VX~lMd-IHuDSNFPFlf8zXUNFBXLD2bmD0mZoa7LwpyYRHhA__',
-        spotifyLink: 'spotify:album:687cZJR45JO7jhk1LHIbgq',
-        spotifyWebLink: 'https://open.spotify.com/album/687cZJR45JO7jhk1LHIbgq?si=Wd9-Qs-eTLCZXbKQRYUYmA',
+        spotifyLink: 'spotify:playlist:0FxFmzE4EI4xibIs9jaIVN',
+        spotifyWebLink: 'https://open.spotify.com/playlist/0FxFmzE4EI4xibIs9jaIVN?si=b35be59cb25b4b95',
         videoId: 'X4MSlFq8bNI' // Owl Pharaoh video - updated with new link
     },
     {
         title: 'Days Before Rodeo',
         year: '2014',
         cover: 'https://i.ibb.co/nsdKrpCM/travis-scott-vinyl-days-before-rodeo-fotor-bg-remover-2025030503355.png',
-        spotifyLink: 'spotify:album:3mqQBxpuABnC63Hl0e6tiR',
-        spotifyWebLink: 'https://open.spotify.com/album/3mqQBxpuABnC63Hl0e6tiR?si=Wd9-Qs-eTLCZXbKQRYUYmA',
+        spotifyLink: 'spotify:album:54Y471E7GNBSOXjZtqONId',
+        spotifyWebLink: 'https://open.spotify.com/album/54Y471E7GNBSOXjZtqONId?si=e0WAR_GtQ-ytkFL-reJhxw',
         videoId: 'sS8ELauHmGM' // Days Before Rodeo video - updated with new link
     }
 ];
@@ -654,7 +654,15 @@ function navigateToAlbum(index) {
 
 // Function to open Spotify links effectively
 function openSpotifyLink(uri, webLink, albumTitle) {
-    console.log('Opening Spotify for ' + albumTitle);
+    console.log('Opening Spotify for ' + albumTitle + ': ' + webLink);
+    
+    // For Owl Pharaoh, which is a playlist, handle it differently
+    if (webLink.includes('playlist')) {
+        console.log('Opening as playlist: ' + webLink);
+        // Open directly in a new tab for playlists
+        window.open(webLink, '_blank');
+        return;
+    }
     
     // First try to open the Spotify app with the URI
     const spotifyAppAttempt = document.createElement('iframe');
@@ -674,7 +682,7 @@ function openSpotifyLink(uri, webLink, albumTitle) {
         
         // Open web link in new tab
         window.open(webLink, '_blank');
-    }, 500);
+    }, 300);
     
     // Also create a direct link as a fallback
     const directLink = document.createElement('a');
@@ -693,7 +701,7 @@ function openSpotifyLink(uri, webLink, albumTitle) {
         } catch (e) {
             // Ignore errors if already removed
         }
-    }, 800);
+    }, 600);
 }
 
 // Function to update album details
