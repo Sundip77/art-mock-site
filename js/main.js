@@ -10,6 +10,10 @@ mobileMenu.addEventListener('click', () => {
 // Global audio state
 let globalMuted = false;
 
+// Track active section for video control
+let activeSection = null;
+let sectionVideos = {};
+
 // Function to toggle mute state for all audio elements
 function toggleGlobalMute() {
     globalMuted = !globalMuted;
@@ -88,6 +92,59 @@ function updateAllAudioElements() {
     console.log('Global audio state updated:', globalMuted ? 'Muted' : 'Unmuted');
 }
 
+// Function to pause all videos except in the active section
+function pauseInactiveVideos() {
+    // Get all sections with videos
+    const sections = ['music', 'tours'];
+    
+    sections.forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        if (!section) return;
+        
+        // Check if section is in viewport
+        const isVisible = isElementInViewport(section);
+        
+        // Get videos in this section
+        let sectionVideo = null;
+        if (sectionId === 'music') {
+            sectionVideo = document.querySelector('#album-bg-video iframe');
+        } else if (sectionId === 'tours') {
+            sectionVideo = document.querySelector('#youtube-player iframe');
+        }
+        
+        if (sectionVideo) {
+            if (isVisible) {
+                // Section is visible, play video
+                console.log(`${sectionId} section is visible, playing video`);
+                let src = sectionVideo.src;
+                
+                // Store the video for this section
+                sectionVideos[sectionId] = sectionVideo;
+                
+                // Make sure autoplay is enabled
+                if (!src.includes('autoplay=1')) {
+                    if (src.includes('autoplay=0')) {
+                        src = src.replace('autoplay=0', 'autoplay=1');
+                    } else {
+                        src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+                    }
+                    sectionVideo.src = src;
+                }
+            } else {
+                // Section is not visible, pause video
+                console.log(`${sectionId} section is not visible, pausing video`);
+                let src = sectionVideo.src;
+                
+                // Replace autoplay=1 with autoplay=0
+                if (src.includes('autoplay=1')) {
+                    src = src.replace('autoplay=1', 'autoplay=0');
+                    sectionVideo.src = src;
+                }
+            }
+        }
+    });
+}
+
 // Smooth Scrolling
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -136,7 +193,7 @@ const galleryImages = [
     }
 ];
 
-// Album Data with background videos
+// Album Data with background videos - Using exact YouTube IDs provided
 const albums = [
     {
         title: 'UTOPIA',
@@ -202,6 +259,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Initialize global mute button
+    const globalMuteBtn = document.getElementById('global-mute-toggle');
+    if (globalMuteBtn) {
+        globalMuteBtn.addEventListener('click', toggleGlobalMute);
+        console.log('Global mute button initialized');
+    }
+
     // Initialize smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -226,171 +290,17 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     });
 
-    // Initialize global mute button
-    const globalMuteBtn = document.getElementById('global-mute-toggle');
-    if (globalMuteBtn) {
-        globalMuteBtn.addEventListener('click', toggleGlobalMute);
-        console.log('Global mute button initialized');
-    }
-
     // Simple YouTube video handling
     youtubeIframe = document.querySelector('#youtube-player iframe');
     if (youtubeIframe) {
         console.log('YouTube iframe found');
-        
-        // Force autoplay when scrolled into view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    console.log('Tours section is visible, ensuring video plays');
-                    // Refresh the iframe to trigger autoplay
-                    const currentSrc = youtubeIframe.src;
-                    youtubeIframe.src = currentSrc;
-                    
-                    // Apply global mute state
-                    setTimeout(() => {
-                        updateAllAudioElements();
-                    }, 1000);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        // Observe the tours section
-        const toursSection = document.getElementById('tours');
-        if (toursSection) {
-            observer.observe(toursSection);
-        }
     }
-
-    // Initialize gallery with smooth scrolling
-    const galleryGrid = document.querySelector('.gallery-grid');
-    if (galleryGrid) {
-        galleryGrid.innerHTML = '';
-        console.log('Initializing gallery grid');
-
-        // Add images to gallery
-        galleryImages.forEach((image, index) => {
-            const img = document.createElement('img');
-            img.src = image.url;
-            img.alt = image.alt;
-            
-            if (image.isWide) {
-                img.classList.add('wide-image');
-                console.log('Added wide image:', image.url);
-            }
-            
-            // Add load event listener
-            img.onload = function() {
-                img.style.opacity = '1';
-                console.log('Image loaded:', image.url);
-            };
-            
-            // Add error handler
-            img.onerror = function() {
-                console.error('Failed to load image:', image.url);
-                // Try to reload the image or use a fallback
-                setTimeout(() => {
-                    img.src = image.url + '?' + new Date().getTime();
-                }, 1000);
-            };
-            
-            galleryGrid.appendChild(img);
-        });
-
-        // Very simple scroll effect that won't break the layout
-        const handleImageScroll = () => {
-            // Get all images including the wide one
-            const images = galleryGrid.querySelectorAll('img');
-            
-            // Apply a very subtle effect to all images
-            images.forEach(img => {
-                const rect = img.getBoundingClientRect();
-                
-                // Only apply effect if image is in viewport
-                if (rect.top < window.innerHeight && rect.bottom > 0) {
-                    // Calculate a very small movement based on scroll position
-                    let translateY = 0;
-                    
-                    if (img.classList.contains('wide-image')) {
-                        // Very subtle movement for wide image (max 20px)
-                        translateY = Math.min(20, Math.max(-20, window.scrollY * 0.02));
-                    } else {
-                        // Even more subtle for regular images
-                        translateY = Math.min(10, Math.max(-10, window.scrollY * 0.01));
-                    }
-                    
-                    // Apply transform
-                    img.style.transform = `translateY(${translateY}px)`;
-                }
-            });
-        };
-
-        // Add scroll event listener
-        window.addEventListener('scroll', handleImageScroll, { passive: true });
-        
-        // Initial call to set positions
-        setTimeout(handleImageScroll, 500);
-    }
-
-    // Initialize form submission
-    const newsletterForm = document.getElementById('newsletter-form');
-    const contactForm = document.getElementById('contact-form');
-
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Add newsletter subscription logic here
-            alert('Thank you for subscribing to our newsletter!');
-            newsletterForm.reset();
-        });
-    }
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Add contact form submission logic here
-            alert('Thank you for your message. We will get back to you soon!');
-            contactForm.reset();
-        });
-    }
-
-    // Initialize scroll animation
-    const scrollElements = document.querySelectorAll('.scroll-animate');
-    
-    const elementInView = (el, percentageScroll = 100) => {
-        const elementTop = el.getBoundingClientRect().top;
-        return (
-            elementTop <= 
-            ((window.innerHeight || document.documentElement.clientHeight) * (percentageScroll/100))
-        );
-    };
-
-    const displayScrollElement = (element) => {
-        element.classList.add('scrolled');
-    };
-
-    const hideScrollElement = (element) => {
-        element.classList.remove('scrolled');
-    };
-
-    const handleScrollAnimation = () => {
-        scrollElements.forEach((el) => {
-            if (elementInView(el, 100)) {
-                displayScrollElement(el);
-            } else {
-                hideScrollElement(el);
-            }
-        });
-    };
-
-    window.addEventListener('scroll', () => {
-        handleScrollAnimation();
-    });
-    
-    handleScrollAnimation();
 
     // Initialize album carousel
     initAlbumCarousel();
+
+    // Set up intersection observers for video sections
+    setupSectionObservers();
 
     // Initialize albums (original code - will be replaced by carousel)
     const albumsGrid = document.querySelector('.albums-grid');
@@ -399,6 +309,83 @@ document.addEventListener('DOMContentLoaded', function() {
         // The original code is kept for reference but won't execute
     }
 });
+
+// Function to set up intersection observers for sections with videos
+function setupSectionObservers() {
+    const sections = ['music', 'tours'];
+    
+    // Create an intersection observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const sectionId = entry.target.id;
+            
+            if (entry.isIntersecting) {
+                console.log(`${sectionId} section is now visible`);
+                activeSection = sectionId;
+                
+                // Play video in this section
+                if (sectionId === 'music') {
+                    const albumBgVideo = document.getElementById('album-bg-video');
+                    if (albumBgVideo) {
+                        updateBackgroundVideo(currentAlbumIndex, true);
+                    }
+                } else if (sectionId === 'tours') {
+                    const toursVideo = document.querySelector('#youtube-player iframe');
+                    if (toursVideo) {
+                        let src = toursVideo.src;
+                        if (src.includes('autoplay=0')) {
+                            src = src.replace('autoplay=0', 'autoplay=1');
+                            toursVideo.src = src;
+                        }
+                    }
+                }
+                
+                // Pause videos in other sections
+                pauseInactiveVideos();
+            } else {
+                console.log(`${sectionId} section is no longer visible`);
+                
+                // Pause video in this section
+                if (sectionId === 'music') {
+                    const albumBgVideo = document.querySelector('#album-bg-video iframe');
+                    if (albumBgVideo) {
+                        let src = albumBgVideo.src;
+                        if (src.includes('autoplay=1')) {
+                            src = src.replace('autoplay=1', 'autoplay=0');
+                            albumBgVideo.src = src;
+                        }
+                    }
+                } else if (sectionId === 'tours') {
+                    const toursVideo = document.querySelector('#youtube-player iframe');
+                    if (toursVideo) {
+                        let src = toursVideo.src;
+                        if (src.includes('autoplay=1')) {
+                            src = src.replace('autoplay=1', 'autoplay=0');
+                            toursVideo.src = src;
+                        }
+                    }
+                }
+                
+                if (activeSection === sectionId) {
+                    activeSection = null;
+                }
+            }
+        });
+    }, { threshold: 0.3 }); // Trigger when 30% of the section is visible
+    
+    // Observe each section
+    sections.forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            observer.observe(section);
+        }
+    });
+    
+    // Also set up scroll event to handle video pausing
+    window.addEventListener('scroll', () => {
+        pauseInactiveVideos();
+    }, { passive: true });
+}
 
 // Function to initialize the album carousel
 function initAlbumCarousel() {
@@ -511,7 +498,14 @@ function initAlbumCarousel() {
     
     // Initialize with the first album
     updateAlbumDetails(currentAlbumIndex);
-    updateBackgroundVideo(currentAlbumIndex);
+    
+    // Only play video if music section is visible
+    const musicSection = document.getElementById('music');
+    if (musicSection && isElementInViewport(musicSection)) {
+        updateBackgroundVideo(currentAlbumIndex, true); // true = autoplay
+    } else {
+        updateBackgroundVideo(currentAlbumIndex, false); // false = don't autoplay
+    }
 }
 
 // Function to navigate to a specific album
@@ -541,7 +535,14 @@ function navigateToAlbum(index) {
     
     // Update album details and background
     updateAlbumDetails(currentAlbumIndex);
-    updateBackgroundVideo(currentAlbumIndex);
+    
+    // Only play video if music section is visible
+    const musicSection = document.getElementById('music');
+    if (musicSection && isElementInViewport(musicSection)) {
+        updateBackgroundVideo(currentAlbumIndex, true); // true = autoplay
+    } else {
+        updateBackgroundVideo(currentAlbumIndex, false); // false = don't autoplay
+    }
     
     // Reset animation flag after transition completes
     setTimeout(() => {
@@ -565,7 +566,7 @@ function updateAlbumDetails(index) {
 }
 
 // Function to update background video
-function updateBackgroundVideo(index) {
+function updateBackgroundVideo(index, shouldAutoplay) {
     const album = albums[index];
     const albumBgVideo = document.getElementById('album-bg-video');
     
@@ -576,13 +577,15 @@ function updateBackgroundVideo(index) {
         <iframe 
             width="100%" 
             height="100%" 
-            src="https://www.youtube.com/embed/${album.videoId}?autoplay=1&mute=${globalMuted ? '1' : '0'}&loop=1&playlist=${album.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
+            src="https://www.youtube.com/embed/${album.videoId}?autoplay=${shouldAutoplay ? '1' : '0'}&mute=${globalMuted ? '1' : '0'}&loop=1&playlist=${album.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
             title="${album.title} Background" 
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
             allowfullscreen>
         </iframe>
     `;
+    
+    console.log(`Updated background video for ${album.title} with autoplay=${shouldAutoplay}`);
 }
 
 // Helper function to get previous index with wrap-around
@@ -597,11 +600,14 @@ function getNextIndex(currentIndex) {
 
 // Helper function to check if element is in viewport
 function isElementInViewport(el) {
+    if (!el) return false;
+    
     const rect = el.getBoundingClientRect();
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    
+    // Consider an element visible if at least 30% of it is in the viewport
+    const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+    const elementHeight = rect.bottom - rect.top;
+    
+    return visibleHeight > 0 && (visibleHeight / elementHeight) > 0.3;
 } 
