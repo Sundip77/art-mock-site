@@ -711,6 +711,10 @@ function initGallery() {
                 img.classList.add('wide-image');
             }
             
+            // Set initial styles to ensure visibility
+            img.style.opacity = '1';
+            img.style.transform = 'translateY(0)';
+            
             // Add animation delay for staggered effect
             img.style.setProperty('--index', index);
             
@@ -723,15 +727,10 @@ function initGallery() {
                 this.style.zIndex = '1';
             });
             
-            // Add load event to fade in images
-            img.onload = function() {
-                this.classList.add('loaded');
-            };
-            
             // Add error handling
             img.onerror = function() {
+                console.error('Failed to load image:', image.url);
                 this.src = 'https://via.placeholder.com/600x400?text=Image+Not+Available';
-                this.onload();
             };
             
             galleryGrid.appendChild(img);
