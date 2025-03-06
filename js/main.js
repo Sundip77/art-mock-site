@@ -268,39 +268,7 @@ function initHeroAnimations() {
     });
 }
 
-// Function to check if user is on home section and update body class
-function checkHomeSection() {
-    const homeSection = document.getElementById('home');
-    const biographySection = document.getElementById('biography');
-    
-    // Create an intersection observer for the home section
-    const homeObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            // If home section is visible, add the on-home class to body
-            if (entry.isIntersecting) {
-                document.body.classList.add('on-home');
-            } else {
-                document.body.classList.remove('on-home');
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    // Create an intersection observer for the biography section
-    const bioObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            // If biography section is visible, ensure on-home class is removed
-            if (entry.isIntersecting) {
-                document.body.classList.remove('on-home');
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    // Start observing sections
-    if (homeSection) homeObserver.observe(homeSection);
-    if (biographySection) bioObserver.observe(biographySection);
-}
-
-// Initialize everything when the DOM is loaded
+// Initialize animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize mobile menu
     const mobileMenu = document.querySelector('.mobile-menu');
@@ -397,7 +365,6 @@ if (albumsGrid) {
     setupAnimationObservers();
 
     initHeroAnimations();
-    checkHomeSection();
 });
 
 // Function to set up intersection observers for sections with videos

@@ -315,6 +315,45 @@ img {
     filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
 }
 
+/* Icon buttons in social links */
+.social-links .icon-btn {
+    position: relative;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.social-links .icon-btn:hover {
+    transform: translateY(-5px) scale(1.15);
+}
+
+.social-links .shop-icon {
+    color: var(--accent-color);
+}
+
+.social-links .shop-icon:hover {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.social-links .globe-icon {
+    color: var(--text-color);
+}
+
+.social-links .globe-icon:hover {
+    background: var(--text-color);
+    color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
 /* Sections */
 .section {
     padding: 6rem 0;
@@ -1348,48 +1387,15 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     color: var(--accent-color);
 }
 
-/* Header buttons styling */
+/* Remove header buttons styles */
 .header-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-/* Only show header buttons when on home section */
-body.on-home .header-buttons {
-    opacity: 1;
-    visibility: visible;
-}
-
-.header-buttons .hero-btn {
-    font-size: 0.8rem;
-    padding: 8px 15px;
-    min-width: 150px;
-}
-
-.header-buttons .hero-btn i {
-    font-size: 0.9rem;
+    display: none;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .logo {
         margin-bottom: 10px;
-    }
-    
-    .header-buttons {
-        flex-direction: row;
-        margin-top: 5px;
-    }
-    
-    .header-buttons .hero-btn {
-        min-width: auto;
-        padding: 6px 12px;
-        font-size: 0.7rem;
     }
 }
 
