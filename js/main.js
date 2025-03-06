@@ -150,35 +150,35 @@ const albums = [
         year: '2018',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Astroworld-CD-1500.png?v=1698376375&width=1100',
         spotifyLink: 'https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I',
-        videoId: '68gLDQlVdQk' // ASTROWORLD video
+        videoId: '6ONRf7h3Mdk' // ASTROWORLD video - updated
     },
     {
         title: 'Birds in the Trap Sing McKnight',
         year: '2016',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Birds-CD-1500.png?v=1698376888&width=1445',
         spotifyLink: 'https://open.spotify.com/album/42WVQWuf1teDysXiOupIZt',
-        videoId: 'mHMvbGxTdSM' // Birds video
+        videoId: 'Dst9gZkq1a8' // Birds video - updated
     },
     {
         title: 'Rodeo',
         year: '2015',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Rodeo-Deluxe-1500.png?v=1699920600&width=1445',
         spotifyLink: 'https://open.spotify.com/album/4PWBTB6NYxuxQa5c2ROUZe',
-        videoId: 'Kl5B6MBAntI' // Rodeo video
+        videoId: 'NnOH3_NAw34' // Rodeo video - updated
     },
     {
         title: 'Owl Pharaoh',
         year: '2013',
         cover: 'https://media-hosting.imagekit.io//9d721a6cd4d84392/s-l1600-removebg-preview.png?Expires=1835725694&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=EjWG6cDHD0YwTCRiAl4PgGHTDu1zzGauE82T~BPHoZmv3eYT7bfx403E0CYLi3pBwtlkSbRKDWgFSR0Hm0ukf7XjP96kRjbVRbobUdnFyUqpLLgeixS~OIXEL7UpfRIwH138691QZi8wlbnRz52Kz0mN3UYrrCMfiMplOy8bCNHiPRO4axFuwOkmR1jTSR2K9CnrcuUF4VY3DEQzAblrx7eTZEjYSJsm~J34kMYZQtRu1EUexpXk51IBXM4aTGFeOspggwt3SEq-ZaTBLrPS3O3~~Kt-SzjZ1sOx-I0VX~lMd-IHuDSNFPFlf8zXUNFBXLD2bmD0mZoa7LwpyYRHhA__',
         spotifyLink: 'https://open.spotify.com/album/687cZJR45JO7jhk1LHIbgq',
-        videoId: 'qRrXGi_cDM0' // Owl Pharaoh video
+        videoId: '8XdlQmYpVzU' // Owl Pharaoh video - updated
     },
     {
         title: 'Days Before Rodeo',
         year: '2014',
         cover: 'https://i.ibb.co/nsdKrpCM/travis-scott-vinyl-days-before-rodeo-fotor-bg-remover-2025030503355.png',
         spotifyLink: 'https://open.spotify.com/album/3mqQBxpuABnC63Hl0e6tiR',
-        videoId: 'BuNBLjJzRoo' // Days Before Rodeo video
+        videoId: 'r2hKhTVaS1g' // Days Before Rodeo video - updated
     }
 ];
 
