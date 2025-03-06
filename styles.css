@@ -315,40 +315,44 @@ img {
     filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
 }
 
-/* Icon buttons in social links */
-.social-links .icon-btn {
-    position: relative;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+/* Navigation icon items */
+.nav-icon-item {
+    margin-right: 5px;
+}
+
+.nav-icon-link {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s ease;
+    color: var(--text-color);
 }
 
-.social-links .icon-btn:hover {
-    transform: translateY(-5px) scale(1.15);
+.nav-icon-link:hover {
+    transform: translateY(-3px);
 }
 
-.social-links .shop-icon {
+.nav-icon-link i {
+    font-size: 0.9rem;
+}
+
+.nav-icon-item:first-child .nav-icon-link {
     color: var(--accent-color);
 }
 
-.social-links .shop-icon:hover {
+.nav-icon-item:first-child .nav-icon-link:hover {
     background: var(--accent-color);
     color: var(--primary-color);
     box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
 }
 
-.social-links .globe-icon {
-    color: var(--text-color);
-}
-
-.social-links .globe-icon:hover {
+.nav-icon-item:nth-child(2) .nav-icon-link:hover {
     background: var(--text-color);
     color: var(--primary-color);
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
@@ -773,22 +777,43 @@ textarea {
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav-links {
-        display: none;
         position: fixed;
         top: 70px;
         left: 0;
         width: 100%;
+        height: 0;
         background-color: var(--primary-color);
-        padding: 1rem;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
+        justify-content: flex-start;
+        overflow: hidden;
+        transition: height 0.5s ease;
+        z-index: 100;
     }
-
+    
     .nav-links.active {
-        display: flex;
+        height: calc(100vh - 70px);
+        padding: 2rem 0;
     }
-
+    
+    .nav-links li {
+        margin: 1rem 0;
+    }
+    
+    /* Adjust icon items in mobile view */
+    .nav-icon-item {
+        margin: 0.5rem 0;
+    }
+    
+    .nav-icon-link {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .nav-icon-link i {
+        font-size: 1.1rem;
+    }
+    
     .mobile-menu {
         display: block;
         background: none;
@@ -796,7 +821,7 @@ textarea {
         cursor: pointer;
         z-index: 1000;
     }
-
+    
     .mobile-menu span {
         display: block;
         width: 25px;
@@ -805,15 +830,15 @@ textarea {
         margin: 5px 0;
         transition: var(--transition);
     }
-
+    
     .mobile-menu.active span:nth-child(1) {
         transform: rotate(45deg) translate(5px, 5px);
     }
-
+    
     .mobile-menu.active span:nth-child(2) {
         opacity: 0;
     }
-
+    
     .mobile-menu.active span:nth-child(3) {
         transform: rotate(-45deg) translate(7px, -6px);
     }
