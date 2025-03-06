@@ -656,8 +656,21 @@ function updateAlbumDetails(index) {
     if (albumTitle) albumTitle.textContent = album.title;
     if (albumYear) albumYear.textContent = album.year;
     if (albumLink) {
+        // Ensure the link is properly formatted and has the correct attributes
         albumLink.href = album.spotifyLink;
+        albumLink.setAttribute('target', '_blank');
+        albumLink.setAttribute('rel', 'noopener noreferrer');
         albumLink.textContent = 'Stream Now';
+        
+        // Add click event listener to ensure the link works
+        albumLink.onclick = function(e) {
+            // Prevent default only to log, then continue with the link
+            e.preventDefault();
+            console.log('Opening Spotify link for ' + album.title + ': ' + album.spotifyLink);
+            
+            // Open in a new tab
+            window.open(album.spotifyLink, '_blank', 'noopener,noreferrer');
+        };
     }
 }
 
