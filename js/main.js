@@ -578,7 +578,7 @@ function updateBackgroundVideo(index, shouldAutoplay) {
     if (album.title === 'Days Before Rodeo') {
         startTime = '&start=22';
     } else if (album.title === 'Rodeo') {
-        startTime = ''; // No timestamp for Rodeo
+        startTime = '&start=24'; // Start Rodeo video at 24 seconds
     } else if (album.title === 'Owl Pharaoh') {
         startTime = '&start=148'; // Updated timestamp for Owl Pharaoh
     }
