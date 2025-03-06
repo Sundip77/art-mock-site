@@ -300,8 +300,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setupSectionObservers();
 
     // Initialize albums (original code - will be replaced by carousel)
-    const albumsGrid = document.querySelector('.albums-grid');
-    if (albumsGrid) {
+const albumsGrid = document.querySelector('.albums-grid');
+if (albumsGrid) {
         // This section is now handled by the carousel
         // The original code is kept for reference but won't execute
     }
@@ -693,72 +693,10 @@ function isElementInViewport(el) {
     return visibleHeight > 0 && (visibleHeight / elementHeight) > 0.3;
 }
 
-// Initialize gallery
+// Initialize gallery - simplified to not interfere with HTML images
 function initGallery() {
-    console.log('Initializing gallery...');
-    const galleryGrid = document.querySelector('.gallery-grid');
-    
-    if (!galleryGrid) {
-        console.error('Gallery grid not found');
-        return;
-    }
-    
-    // Check if images already exist in the gallery
-    const existingImages = galleryGrid.querySelectorAll('img');
-    
-    if (existingImages.length > 0) {
-        console.log('Gallery images already exist in HTML, enhancing them');
-        
-        // Enhance existing images
-        existingImages.forEach((img) => {
-            // Ensure visibility
-            img.style.cssText = 'opacity: 1; transform: translateY(0); display: block;';
-            
-            // Add error handling
-            img.onerror = function() {
-                console.error('Failed to load image:', img.src);
-                this.src = 'https://via.placeholder.com/600x400?text=Image+Not+Available';
-            };
-        });
-        
-        return;
-    }
-    
-    // If no images exist, create them from the galleryImages array
-    console.log('No gallery images found in HTML, creating them dynamically');
-    galleryGrid.innerHTML = '';
-    
-    // Create and append images directly to the DOM
-    galleryImages.forEach((image, index) => {
-        // Create image element
-        const imgElement = document.createElement('img');
-        
-        // Set basic attributes
-        imgElement.alt = image.alt;
-        imgElement.loading = 'lazy';
-        
-        // Add wide-image class if needed
-        if (image.isWide) {
-            imgElement.classList.add('wide-image');
-        }
-        
-        // Set inline styles to ensure visibility
-        imgElement.style.cssText = 'opacity: 1; transform: translateY(0); display: block;';
-        
-        // Add error handling
-        imgElement.onerror = function() {
-            console.error('Failed to load image:', image.url);
-            this.src = 'https://via.placeholder.com/600x400?text=Image+Not+Available';
-        };
-        
-        // Set the source last to trigger loading
-        imgElement.src = image.url;
-        
-        // Append to gallery
-        galleryGrid.appendChild(imgElement);
-        
-        console.log(`Added image ${index + 1}:`, image.url);
-    });
+    console.log('Gallery initialization skipped - using direct HTML images');
+    // No dynamic manipulation of gallery images
 }
 
 // Initialize tour cards with animation delays
