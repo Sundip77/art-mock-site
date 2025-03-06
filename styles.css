@@ -63,6 +63,12 @@ img {
     padding: 1rem 2rem;
 }
 
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .logo h1 {
     font-size: 1.5rem;
     color: var(--accent-color);
@@ -1340,4 +1346,55 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 
 .logo a:hover {
     color: var(--accent-color);
+}
+
+/* Header buttons styling */
+.header-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Only show header buttons when on home section */
+body.on-home .header-buttons {
+    opacity: 1;
+    visibility: visible;
+}
+
+.header-buttons .hero-btn {
+    font-size: 0.8rem;
+    padding: 8px 15px;
+    min-width: 150px;
+}
+
+.header-buttons .hero-btn i {
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .logo {
+        margin-bottom: 10px;
+    }
+    
+    .header-buttons {
+        flex-direction: row;
+        margin-top: 5px;
+    }
+    
+    .header-buttons .hero-btn {
+        min-width: auto;
+        padding: 6px 12px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-buttons {
+        display: none;
+    }
 } 
