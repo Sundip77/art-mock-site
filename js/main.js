@@ -696,10 +696,77 @@ function isElementInViewport(el) {
     return visibleHeight > 0 && (visibleHeight / elementHeight) > 0.3;
 }
 
-// Initialize gallery - simplified to not interfere with HTML images
+// Initialize parallax effect for gallery
+function initParallaxEffect() {
+    const parallaxContainer = document.getElementById('parallax-container');
+    const parallaxImage = document.getElementById('parallax-image');
+    
+    if (!parallaxContainer || !parallaxImage) return;
+    
+    // Initial position
+    let initialOffset = 0;
+    let containerTop = 0;
+    let containerHeight = 0;
+    let windowHeight = 0;
+    
+    // Function to calculate positions
+    function calculatePositions() {
+        const rect = parallaxContainer.getBoundingClientRect();
+        containerTop = rect.top;
+        containerHeight = rect.height;
+        windowHeight = window.innerHeight;
+        
+        // Only update if the container is in view
+        if (containerTop < windowHeight && containerTop + containerHeight > 0) {
+            // Calculate how far the container is through the viewport
+            const percentageThrough = (windowHeight - containerTop) / (windowHeight + containerHeight);
+            
+            // Calculate the offset for the image (20% of its height)
+            const maxOffset = parallaxImage.offsetHeight - containerHeight;
+            const newOffset = maxOffset * percentageThrough;
+            
+            // Apply the transform with a smooth transition
+            parallaxImage.style.transform = `translateY(-${newOffset}px)`;
+        }
+    }
+    
+    // Calculate on scroll
+    window.addEventListener('scroll', calculatePositions);
+    
+    // Calculate on resize
+    window.addEventListener('resize', calculatePositions);
+    
+    // Initial calculation
+    calculatePositions();
+    
+    console.log('Parallax effect initialized for gallery');
+}
+
+// Initialize gallery with animations
 function initGallery() {
     console.log('Gallery initialization skipped - using direct HTML images');
-    // No dynamic manipulation of gallery images
+    
+    // Initialize parallax effect
+    initParallaxEffect();
+    
+    // Add intersection observer for gallery items
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    if (galleryItems.length > 0 && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        galleryItems.forEach(item => {
+            observer.observe(item);
+        });
+    }
 }
 
 // Initialize tour cards with animation delays
