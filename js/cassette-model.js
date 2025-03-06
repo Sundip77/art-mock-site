@@ -3,6 +3,7 @@ let cassetteRotationY = 0;
 let cassetteMouseX = 0;
 let cassetteMouseXOnMouseDown = 0;
 let cassetteDragging = false;
+let animationId = null;
 
 function initCassetteModel() {
     // Create scene
@@ -19,7 +20,7 @@ function initCassetteModel() {
         alpha: true,
         powerPreference: "high-performance"
     });
-    cassetteRenderer.setSize(200, 200);
+    cassetteRenderer.setSize(300, 300); // Match the CSS size
     cassetteRenderer.setClearColor(0x000000, 0);
     cassetteRenderer.setPixelRatio(window.devicePixelRatio);
     cassetteRenderer.shadowMap.enabled = true;
@@ -135,7 +136,6 @@ function createSimpleCassetteModel() {
     rightWindow.receiveShadow = true;
     cassetteModel.add(rightWindow);
     
-    // Add Travis Scott logo text to the label
     // Since TextGeometry requires a font that we may not have loaded,
     // let's create a simple plane with a texture instead
     const textMaterial = new THREE.MeshPhongMaterial({ 
@@ -153,15 +153,15 @@ function createSimpleCassetteModel() {
     // Add the model to the scene
     cassetteScene.add(cassetteModel);
     
-    // Rotate for better view
-    cassetteModel.rotation.x = Math.PI / 6;
+    // Scale the model to be larger
+    cassetteModel.scale.set(1.5, 1.5, 1.5);
 }
 
 function animateCassette() {
-    requestAnimationFrame(animateCassette);
+    animationId = requestAnimationFrame(animateCassette);
     
     if (cassetteModel) {
-        // Gentle auto-rotation
+        // Gentle auto-rotation - make sure it's visible
         cassetteModel.rotation.y += 0.01;
         
         // Add subtle floating animation
@@ -173,8 +173,8 @@ function animateCassette() {
 
 // Initialize when the page loads
 window.addEventListener('load', function() {
-    // Wait a bit to ensure the main model is loaded first
-    setTimeout(initCassetteModel, 1000);
+    // Initialize immediately
+    setTimeout(initCassetteModel, 500);
 });
 
 // Handle intersection observer to only animate when visible
@@ -185,9 +185,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (entry.isIntersecting) {
                     // Start or resume animation when visible
                     if (cassetteModel) {
-                        animateCassette();
+                        if (!animationId) {
+                            animateCassette();
+                        }
                     } else {
                         initCassetteModel();
+                    }
+                } else {
+                    // Stop animation when not visible
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                        animationId = null;
                     }
                 }
             });

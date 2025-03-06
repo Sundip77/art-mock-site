@@ -442,8 +442,8 @@ h2::after {
 
 /* 3D Cassette Model Container */
 .bio-model-container {
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
     margin: 0 auto 30px;
     position: relative;
     overflow: hidden;
