@@ -308,6 +308,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // This section is now handled by the carousel
         // The original code is kept for reference but won't execute
     }
+
+    // Force initial video load if music section is visible
+    const musicSection = document.getElementById('music');
+    if (musicSection && isElementInViewport(musicSection)) {
+        setTimeout(() => {
+            console.log('Forcing initial video load for Utopia');
+            updateBackgroundVideo(currentAlbumIndex, true);
+        }, 1500);
+    }
 });
 
 // Function to set up intersection observers for sections with videos
@@ -385,6 +394,15 @@ function setupSectionObservers() {
     window.addEventListener('scroll', () => {
         pauseInactiveVideos();
     }, { passive: true });
+    
+    // Check if music section is visible on page load
+    setTimeout(() => {
+        const musicSection = document.getElementById('music');
+        if (musicSection && isElementInViewport(musicSection)) {
+            console.log('Music section is visible on page load, playing Utopia video');
+            updateBackgroundVideo(currentAlbumIndex, true);
+        }
+    }, 1000);
 }
 
 // Function to initialize the album carousel
@@ -581,6 +599,8 @@ function updateBackgroundVideo(index, shouldAutoplay) {
         startTime = '&start=24'; // Start Rodeo video at 24 seconds
     } else if (album.title === 'Owl Pharaoh') {
         startTime = '&start=148'; // Updated timestamp for Owl Pharaoh
+    } else if (album.title === 'UTOPIA') {
+        startTime = '&start=16'; // Start UTOPIA video at 16 seconds
     }
     
     albumBgVideo.innerHTML = `
