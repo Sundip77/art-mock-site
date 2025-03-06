@@ -389,27 +389,25 @@ h2::after {
 /* Biography Section */
 .bio-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 4rem;
-    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
 }
 
 .bio-image-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    position: relative;
 }
 
 .bio-image img {
     width: 100%;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease;
 }
 
 .bio-image img:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    transform: scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .bio-content h3 {
@@ -425,42 +423,50 @@ h2::after {
     line-height: 1.8;
 }
 
-/* Timeline */
-.timeline {
+/* Timeline grid layout */
+.timeline-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.timeline-row {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
 }
 
 .timeline-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
     text-align: center;
-    padding: 0.8rem;
-    background-color: var(--secondary-color);
-    border-radius: 8px;
-    transition: var(--transition);
-    min-height: 70px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    border-left: 3px solid var(--accent-color);
 }
 
 .timeline-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .timeline-item h4 {
     color: var(--accent-color);
-    margin-bottom: 0.3rem;
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
 }
 
 .timeline-item p {
-    font-size: 1rem;
-    margin: 0;
-    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Biography link */
+.bio-link {
+    display: inline-block;
+    margin-top: 20px;
 }
 
 /* Music Section */
@@ -855,8 +861,14 @@ textarea {
         padding: 4rem 0;
     }
 
-    .timeline {
-        margin-top: 1rem;
+    .timeline-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .timeline-row:last-child .timeline-item:last-child {
+        grid-column: span 2;
+        width: 50%;
+        margin: 0 auto;
     }
 
     .gallery-grid {
@@ -905,6 +917,15 @@ textarea {
 
     .album-card {
         width: calc(50% - 2px);
+    }
+
+    .timeline-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .timeline-row:last-child .timeline-item:last-child {
+        grid-column: auto;
+        width: 100%;
     }
 }
 
