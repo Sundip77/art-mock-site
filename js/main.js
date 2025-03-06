@@ -169,27 +169,24 @@ images.forEach(img => {
     };
 });
 
-// Gallery Images
+// Gallery images
 const galleryImages = [
     {
-        url: 'https://media.pitchfork.com/photos/64ab2f27be750061ad40dd13/3:2/w_1560,h_1040,c_limit/travis-scott.jpg',
-        alt: 'Travis Scott portrait',
+        url: 'https://media.pitchfork.com/photos/5d3a0c3d4e0f78000872b7e0/master/w_1600,c_limit/Travis-Scott.jpg',
+        alt: 'Travis Scott performing on stage',
         isWide: true
     },
     {
-        url: 'https://pbs.twimg.com/media/GMS0olvW8AApOU1.jpg:large',
-        alt: 'Travis Scott performance',
-        isWide: false
+        url: 'https://www.rollingstone.com/wp-content/uploads/2018/08/travis-scott-astroworld-review.jpg',
+        alt: 'Travis Scott Astroworld era'
     },
     {
-        url: 'https://d1mnxluw9mpf9w.cloudfront.net/media/8375/travis-scott.jpg',
-        alt: 'Travis Scott stage performance',
-        isWide: false
+        url: 'https://www.billboard.com/wp-content/uploads/2023/07/travis-scott-utopia-cr-Jerritt-Clark-2023-billboard-1548.jpg',
+        alt: 'Travis Scott Utopia era'
     },
     {
-        url: 'https://4kwallpapers.com/images/walls/thumbs_3t/12441.jpg',
-        alt: 'Travis Scott concert',
-        isWide: false
+        url: 'https://www.billboard.com/wp-content/uploads/2023/07/travis-scott-performs-circus-maximus-2023-billboard-1548.jpg',
+        alt: 'Travis Scott live performance'
     }
 ];
 
@@ -333,41 +330,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1500);
     }
 
-    // Initialize gallery with images
-    const galleryGrid = document.querySelector('.gallery-grid');
-    if (galleryGrid) {
-        galleryGrid.innerHTML = '';
-        console.log('Initializing gallery grid');
-
-        // Add images to gallery
-        galleryImages.forEach((image, index) => {
-            const img = document.createElement('img');
-            img.src = image.url;
-            img.alt = image.alt;
-            
-            if (image.isWide) {
-                img.classList.add('wide-image');
-                console.log('Added wide image:', image.url);
-            }
-            
-            // Add load event listener
-            img.onload = function() {
-                img.style.opacity = '1';
-                console.log('Image loaded:', image.url);
-            };
-            
-            // Add error handler
-            img.onerror = function() {
-                console.error('Failed to load image:', image.url);
-                // Try to reload the image or use a fallback
-                setTimeout(() => {
-                    img.src = image.url + '?' + new Date().getTime();
-                }, 1000);
-            };
-            
-            galleryGrid.appendChild(img);
-        });
-    }
+    // Initialize gallery
+    initGallery();
+    
+    // Initialize tour cards
+    initTourCards();
+    
+    // Setup intersection observers for animations
+    setupAnimationObservers();
 });
 
 // Function to set up intersection observers for sections with videos
@@ -721,4 +691,93 @@ function isElementInViewport(el) {
     const elementHeight = rect.bottom - rect.top;
     
     return visibleHeight > 0 && (visibleHeight / elementHeight) > 0.3;
+}
+
+// Initialize gallery
+function initGallery() {
+    const galleryGrid = document.querySelector('.gallery-grid');
+    if (galleryGrid) {
+        galleryGrid.innerHTML = '';
+        
+        // Add images to gallery
+        galleryImages.forEach((image, index) => {
+            const img = document.createElement('img');
+            img.src = image.url;
+            img.alt = image.alt;
+            img.loading = 'lazy';
+            
+            // Add wide-image class to the first image
+            if (image.isWide) {
+                img.classList.add('wide-image');
+            }
+            
+            // Add animation delay for staggered effect
+            img.style.setProperty('--index', index);
+            
+            // Add hover effect
+            img.addEventListener('mouseover', function() {
+                this.style.zIndex = '10';
+            });
+            
+            img.addEventListener('mouseout', function() {
+                this.style.zIndex = '1';
+            });
+            
+            // Add load event to fade in images
+            img.onload = function() {
+                this.classList.add('loaded');
+            };
+            
+            // Add error handling
+            img.onerror = function() {
+                this.src = 'https://via.placeholder.com/600x400?text=Image+Not+Available';
+                this.onload();
+            };
+            
+            galleryGrid.appendChild(img);
+        });
+    }
+}
+
+// Initialize tour cards with animation delays
+function initTourCards() {
+    const tourCards = document.querySelectorAll('.tour-card');
+    tourCards.forEach((card, index) => {
+        card.style.setProperty('--index', index);
+    });
+}
+
+// Setup intersection observers for animations
+function setupAnimationObservers() {
+    const animatedSections = document.querySelectorAll('#gallery, #tours');
+    
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.id === 'gallery') {
+                        const images = entry.target.querySelectorAll('img');
+                        images.forEach((img, index) => {
+                            setTimeout(() => {
+                                img.style.opacity = '1';
+                                img.style.transform = 'translateY(0)';
+                            }, index * 100);
+                        });
+                    } else if (entry.target.id === 'tours') {
+                        const cards = entry.target.querySelectorAll('.tour-card');
+                        cards.forEach((card, index) => {
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                            }, index * 100);
+                        });
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animatedSections.forEach(section => {
+            observer.observe(section);
+        });
+    }
 } 
