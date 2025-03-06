@@ -199,42 +199,42 @@ const albums = [
         title: 'UTOPIA',
         year: '2023',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Utopia-CD-1500.png?v=1698377013&width=1100',
-        spotifyLink: 'https://open.spotify.com/album/0387OE4TJJGaH1M8sKL1K6',
+        spotifyLink: 'https://open.spotify.com/album/0387OE4TJJGaH1M8sKL1K6?si=Wd9-Qs-eTLCZXbKQRYUYmA',
         videoId: 'FRjQH1kLjEc' // UTOPIA video
     },
     {
         title: 'ASTROWORLD',
         year: '2018',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Astroworld-CD-1500.png?v=1698376375&width=1100',
-        spotifyLink: 'https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I',
+        spotifyLink: 'https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I?si=Wd9-Qs-eTLCZXbKQRYUYmA',
         videoId: '6ONRf7h3Mdk' // ASTROWORLD video - updated
     },
     {
         title: 'Birds in the Trap Sing McKnight',
         year: '2016',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Birds-CD-1500.png?v=1698376888&width=1445',
-        spotifyLink: 'https://open.spotify.com/album/42WVQWuf1teDysXiOupIZt',
+        spotifyLink: 'https://open.spotify.com/album/42WVQWuf1teDysXiOupIZt?si=Wd9-Qs-eTLCZXbKQRYUYmA',
         videoId: 'Dst9gZkq1a8' // Birds video - updated
     },
     {
         title: 'Rodeo',
         year: '2015',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Rodeo-Deluxe-1500.png?v=1699920600&width=1445',
-        spotifyLink: 'https://open.spotify.com/album/4PWBTB6NYxuxQa5c2ROUZe',
+        spotifyLink: 'https://open.spotify.com/album/4PWBTB6NYxuxQa5c2ROUZe?si=Wd9-Qs-eTLCZXbKQRYUYmA',
         videoId: 'KnZ8h3MRuYg' // Rodeo video - updated with new link
     },
     {
         title: 'Owl Pharaoh',
         year: '2013',
         cover: 'https://media-hosting.imagekit.io//9d721a6cd4d84392/s-l1600-removebg-preview.png?Expires=1835725694&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=EjWG6cDHD0YwTCRiAl4PgGHTDu1zzGauE82T~BPHoZmv3eYT7bfx403E0CYLi3pBwtlkSbRKDWgFSR0Hm0ukf7XjP96kRjbVRbobUdnFyUqpLLgeixS~OIXEL7UpfRIwH138691QZi8wlbnRz52Kz0mN3UYrrCMfiMplOy8bCNHiPRO4axFuwOkmR1jTSR2K9CnrcuUF4VY3DEQzAblrx7eTZEjYSJsm~J34kMYZQtRu1EUexpXk51IBXM4aTGFeOspggwt3SEq-ZaTBLrPS3O3~~Kt-SzjZ1sOx-I0VX~lMd-IHuDSNFPFlf8zXUNFBXLD2bmD0mZoa7LwpyYRHhA__',
-        spotifyLink: 'https://open.spotify.com/album/687cZJR45JO7jhk1LHIbgq',
+        spotifyLink: 'https://open.spotify.com/album/687cZJR45JO7jhk1LHIbgq?si=Wd9-Qs-eTLCZXbKQRYUYmA',
         videoId: 'X4MSlFq8bNI' // Owl Pharaoh video - updated with new link
     },
     {
         title: 'Days Before Rodeo',
         year: '2014',
         cover: 'https://i.ibb.co/nsdKrpCM/travis-scott-vinyl-days-before-rodeo-fotor-bg-remover-2025030503355.png',
-        spotifyLink: 'https://open.spotify.com/album/3mqQBxpuABnC63Hl0e6tiR',
+        spotifyLink: 'https://open.spotify.com/album/3mqQBxpuABnC63Hl0e6tiR?si=Wd9-Qs-eTLCZXbKQRYUYmA',
         videoId: 'sS8ELauHmGM' // Days Before Rodeo video - updated with new link
     }
 ];
@@ -655,22 +655,46 @@ function updateAlbumDetails(index) {
     
     if (albumTitle) albumTitle.textContent = album.title;
     if (albumYear) albumYear.textContent = album.year;
+    
     if (albumLink) {
-        // Ensure the link is properly formatted and has the correct attributes
-        albumLink.href = album.spotifyLink;
-        albumLink.setAttribute('target', '_blank');
-        albumLink.setAttribute('rel', 'noopener noreferrer');
-        albumLink.textContent = 'Stream Now';
+        // Remove any existing event listeners to prevent duplicates
+        const newAlbumLink = albumLink.cloneNode(true);
+        albumLink.parentNode.replaceChild(newAlbumLink, albumLink);
         
-        // Add click event listener to ensure the link works
-        albumLink.onclick = function(e) {
-            // Prevent default only to log, then continue with the link
+        // Set up the new link with proper attributes
+        newAlbumLink.href = album.spotifyLink;
+        newAlbumLink.setAttribute('target', '_blank');
+        newAlbumLink.setAttribute('rel', 'noopener noreferrer');
+        newAlbumLink.textContent = 'Stream Now';
+        
+        // Add a direct click handler that forces the link to open
+        newAlbumLink.addEventListener('click', function(e) {
             e.preventDefault();
             console.log('Opening Spotify link for ' + album.title + ': ' + album.spotifyLink);
             
-            // Open in a new tab
-            window.open(album.spotifyLink, '_blank', 'noopener,noreferrer');
-        };
+            // Try multiple approaches to open the link
+            try {
+                // Method 1: window.open
+                const newWindow = window.open(album.spotifyLink, '_blank');
+                
+                // If popup was blocked or failed, try alternative method
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    // Method 2: Create and click a temporary link
+                    const tempLink = document.createElement('a');
+                    tempLink.href = album.spotifyLink;
+                    tempLink.target = '_blank';
+                    tempLink.rel = 'noopener noreferrer';
+                    tempLink.style.display = 'none';
+                    document.body.appendChild(tempLink);
+                    tempLink.click();
+                    document.body.removeChild(tempLink);
+                }
+            } catch (error) {
+                console.error('Error opening Spotify link:', error);
+                // Method 3: Direct location change as fallback
+                window.location.href = album.spotifyLink;
+            }
+        });
     }
 }
 
