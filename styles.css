@@ -392,22 +392,21 @@ h2::after {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     margin-top: 40px;
+    align-items: stretch;
 }
 
 .bio-image-container {
     position: relative;
+    height: 100%;
 }
 
 .bio-image img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     transition: all 0.5s ease;
-}
-
-.bio-image img:hover {
-    transform: scale(1.02);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .bio-content h3 {
@@ -423,50 +422,76 @@ h2::after {
     line-height: 1.8;
 }
 
+/* Biography link */
+.bio-link {
+    display: block;
+    margin: 20px auto 30px;
+    text-align: center;
+    width: fit-content;
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    background-color: var(--accent-color);
+    color: #fff;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.bio-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background-color: #ff6b00;
+}
+
 /* Timeline grid layout */
 .timeline-grid {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    height: 100%;
+    justify-content: space-between;
 }
 
 .timeline-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
+    height: calc(50% - 10px);
 }
 
 .timeline-item {
     background-color: rgba(255, 255, 255, 0.05);
     border-radius: 10px;
-    padding: 20px;
+    padding: 25px 20px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     text-align: center;
-    border-left: 3px solid var(--accent-color);
+    border-left: 4px solid var(--accent-color);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 120px;
 }
 
 .timeline-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .timeline-item h4 {
     color: var(--accent-color);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 .timeline-item p {
-    font-size: 0.9rem;
+    font-size: 1rem;
     line-height: 1.4;
-}
-
-/* Biography link */
-.bio-link {
-    display: inline-block;
-    margin-top: 20px;
 }
 
 /* Music Section */
