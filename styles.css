@@ -8,6 +8,9 @@
     --transition: all 0.3s ease;
     --bg-color: #f9f9f9;
     --dark-bg: #222;
+    --travis-font: 'Archivo Black', sans-serif;
+    --travis-mono: 'Roboto Mono', monospace;
+    --travis-body: 'Montserrat', sans-serif;
 }
 
 /* Reset and base styles */
@@ -22,7 +25,7 @@ html {
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--travis-body);
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--primary-color);
@@ -31,7 +34,8 @@ body {
 img {
     max-width: 100%;
     height: auto;
-    opacity: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
     transform: none;
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
@@ -1056,4 +1060,21 @@ textarea {
         height: 50px;
         font-size: 18px;
     }
+}
+
+/* Typography updates to match Travis Scott website */
+h1, h2, h3, .logo h1, .hero-content h1, .album-title {
+    font-family: var(--travis-font);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-links a, .stream-btn, .ticket-btn, .btn {
+    font-family: var(--travis-mono);
+    letter-spacing: 0.5px;
+}
+
+.subtitle, .tour-date, .album-year {
+    font-family: var(--travis-mono);
+    letter-spacing: 1px;
 } 

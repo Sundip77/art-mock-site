@@ -312,9 +312,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Force initial video load if music section is visible
     const musicSection = document.getElementById('music');
     if (musicSection && isElementInViewport(musicSection)) {
+        // Initial load
+        updateBackgroundVideo(currentAlbumIndex, true);
+        
+        // Check again after a delay to ensure it's playing
         setTimeout(() => {
             console.log('Forcing initial video load for Utopia');
-            updateBackgroundVideo(currentAlbumIndex, true);
+            const iframe = document.querySelector('#album-bg-video iframe');
+            if (iframe) {
+                // Ensure autoplay is enabled
+                if (iframe.src.includes('autoplay=0')) {
+                    iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+                } else if (!iframe.src.includes('autoplay=1')) {
+                    iframe.src = iframe.src + '&autoplay=1';
+                }
+            } else {
+                // If iframe doesn't exist yet, create it
+                updateBackgroundVideo(currentAlbumIndex, true);
+            }
         }, 1500);
     }
 });
@@ -334,10 +349,19 @@ function setupSectionObservers() {
                 
                 // Play video in this section
                 if (sectionId === 'music') {
-                    const albumBgVideo = document.getElementById('album-bg-video');
-                    if (albumBgVideo) {
-                        updateBackgroundVideo(currentAlbumIndex, true);
-                    }
+                    console.log('Music section is visible, forcing video play');
+                    // Force video to play by recreating it
+                    updateBackgroundVideo(currentAlbumIndex, true);
+                    
+                    // Double-check after a short delay to ensure it's playing
+                    setTimeout(() => {
+                        const iframe = document.querySelector('#album-bg-video iframe');
+                        if (iframe) {
+                            console.log('Refreshing music video iframe to ensure autoplay');
+                            const currentSrc = iframe.src;
+                            iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
+                        }
+                    }, 500);
                 } else if (sectionId === 'tours') {
                     const toursVideo = document.querySelector('#youtube-player iframe');
                     if (toursVideo) {
@@ -380,7 +404,7 @@ function setupSectionObservers() {
                 }
             }
         });
-    }, { threshold: 0.3 }); // Trigger when 30% of the section is visible
+    }, { threshold: 0.2 }); // Lower threshold to detect section earlier
     
     // Observe each section
     sections.forEach(sectionId => {
@@ -392,6 +416,16 @@ function setupSectionObservers() {
     
     // Also set up scroll event to handle video pausing
     window.addEventListener('scroll', () => {
+        const musicSection = document.getElementById('music');
+        if (musicSection && isElementInViewport(musicSection)) {
+            console.log('Music section detected in viewport during scroll');
+            // Check if video is already playing
+            const iframe = document.querySelector('#album-bg-video iframe');
+            if (iframe && iframe.src.includes('autoplay=0')) {
+                console.log('Forcing video play during scroll');
+                iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+            }
+        }
         pauseInactiveVideos();
     }, { passive: true });
     
@@ -401,6 +435,17 @@ function setupSectionObservers() {
         if (musicSection && isElementInViewport(musicSection)) {
             console.log('Music section is visible on page load, playing Utopia video');
             updateBackgroundVideo(currentAlbumIndex, true);
+            
+            // Double-check after a short delay
+            setTimeout(() => {
+                const iframe = document.querySelector('#album-bg-video iframe');
+                if (iframe) {
+                    console.log('Ensuring autoplay is enabled');
+                    if (iframe.src.includes('autoplay=0')) {
+                        iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
+                    }
+                }
+            }, 1000);
         }
     }, 1000);
 }
