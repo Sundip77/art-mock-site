@@ -68,8 +68,7 @@ function createChatbotUI() {
     chatbotButton.id = 'chatbot-button';
     chatbotButton.className = 'chatbot-button';
     chatbotButton.innerHTML = `
-        <img src="https://i.imgur.com/JWxMjmZ.png" alt="Cactus Jack Logo" class="chatbot-button-logo">
-        <span>Chat with Travis Bot</span>
+        <i class="fas fa-comment"></i>
     `;
     
     // Add the chatbot to the page

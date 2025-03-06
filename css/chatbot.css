@@ -3,21 +3,21 @@
 /* Chatbot Button */
 .chatbot-button {
     position: fixed;
-    bottom: 30px;
+    bottom: 90px; /* Position above the mute button */
     right: 30px;
     display: flex;
     align-items: center;
+    justify-content: center;
     background-color: #ff6b00;
     color: #fff;
     border: none;
-    border-radius: 30px;
-    padding: 12px 20px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 999;
     transition: all 0.3s ease;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
 }
 
 .chatbot-button:hover {
@@ -27,9 +27,11 @@
 }
 
 .chatbot-button-logo {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
+    display: none; /* Hide the logo */
+}
+
+.chatbot-button i {
+    font-size: 20px;
 }
 
 /* Chatbot Container */
