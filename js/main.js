@@ -228,7 +228,7 @@ const albums = [
         year: '2013',
         cover: 'https://media-hosting.imagekit.io//9d721a6cd4d84392/s-l1600-removebg-preview.png?Expires=1835725694&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=EjWG6cDHD0YwTCRiAl4PgGHTDu1zzGauE82T~BPHoZmv3eYT7bfx403E0CYLi3pBwtlkSbRKDWgFSR0Hm0ukf7XjP96kRjbVRbobUdnFyUqpLLgeixS~OIXEL7UpfRIwH138691QZi8wlbnRz52Kz0mN3UYrrCMfiMplOy8bCNHiPRO4axFuwOkmR1jTSR2K9CnrcuUF4VY3DEQzAblrx7eTZEjYSJsm~J34kMYZQtRu1EUexpXk51IBXM4aTGFeOspggwt3SEq-ZaTBLrPS3O3~~Kt-SzjZ1sOx-I0VX~lMd-IHuDSNFPFlf8zXUNFBXLD2bmD0mZoa7LwpyYRHhA__',
         spotifyLink: 'https://open.spotify.com/album/687cZJR45JO7jhk1LHIbgq',
-        videoId: '8XdlQmYpVzU' // Owl Pharaoh video - updated
+        videoId: 'X4MSlFq8bNI' // Owl Pharaoh video - updated with new link
     },
     {
         title: 'Days Before Rodeo',
@@ -579,6 +579,8 @@ function updateBackgroundVideo(index, shouldAutoplay) {
         startTime = '&start=22';
     } else if (album.title === 'Rodeo') {
         startTime = '&start=24';
+    } else if (album.title === 'Owl Pharaoh') {
+        startTime = '&start=140';
     }
     
     albumBgVideo.innerHTML = `
