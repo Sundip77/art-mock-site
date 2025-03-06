@@ -172,21 +172,24 @@ images.forEach(img => {
 // Gallery images
 const galleryImages = [
     {
-        url: 'https://media.pitchfork.com/photos/5d3a0c3d4e0f78000872b7e0/master/w_1600,c_limit/Travis-Scott.jpg',
-        alt: 'Travis Scott performing on stage',
+        url: 'https://media.pitchfork.com/photos/64ab2f27be750061ad40dd13/3:2/w_1560,h_1040,c_limit/travis-scott.jpg',
+        alt: 'Travis Scott portrait',
         isWide: true
     },
     {
-        url: 'https://www.rollingstone.com/wp-content/uploads/2018/08/travis-scott-astroworld-review.jpg',
-        alt: 'Travis Scott Astroworld era'
+        url: 'https://pbs.twimg.com/media/GMS0olvW8AApOU1.jpg:large',
+        alt: 'Travis Scott performance',
+        isWide: false
     },
     {
-        url: 'https://www.billboard.com/wp-content/uploads/2023/07/travis-scott-utopia-cr-Jerritt-Clark-2023-billboard-1548.jpg',
-        alt: 'Travis Scott Utopia era'
+        url: 'https://d1mnxluw9mpf9w.cloudfront.net/media/8375/travis-scott.jpg',
+        alt: 'Travis Scott stage performance',
+        isWide: false
     },
     {
-        url: 'https://www.billboard.com/wp-content/uploads/2023/07/travis-scott-performs-circus-maximus-2023-billboard-1548.jpg',
-        alt: 'Travis Scott live performance'
+        url: 'https://4kwallpapers.com/images/walls/thumbs_3t/12441.jpg',
+        alt: 'Travis Scott concert',
+        isWide: false
     }
 ];
 
