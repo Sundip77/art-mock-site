@@ -13,6 +13,57 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // This function will be called when the page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            // Function to handle autoplay
+            function handleVideoAutoplay() {
+                const iframe = document.querySelector('#youtube-player iframe');
+                if (iframe) {
+                    console.log('Ensuring YouTube video plays with sound');
+                    // Make sure autoplay and unmute parameters are in the URL
+                    let src = iframe.src;
+                    if (!src.includes('autoplay=1')) {
+                        src = src.replace('autoplay=0', 'autoplay=1');
+                        if (!src.includes('autoplay')) {
+                            src += '&autoplay=1';
+                        }
+                    }
+                    if (!src.includes('mute=0')) {
+                        src = src.replace('mute=1', 'mute=0');
+                        if (!src.includes('mute')) {
+                            src += '&mute=0';
+                        }
+                    }
+                    iframe.src = src;
+                }
+            }
+            
+            // Call immediately
+            handleVideoAutoplay();
+            
+            // Also call when scrolling to the tours section
+            document.querySelector('a[href="#tours"]').addEventListener('click', function() {
+                setTimeout(handleVideoAutoplay, 1000); // Delay to ensure section is visible
+            });
+            
+            // Create an intersection observer to detect when tours section is visible
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            handleVideoAutoplay();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                const toursSection = document.getElementById('tours');
+                if (toursSection) {
+                    observer.observe(toursSection);
+                }
+            }
+        });
+    </script>
 </head>
 <body>
     <header class="main-header">
@@ -129,6 +180,85 @@
             </div>
         </section>
 
+        <section id="tours" class="section">
+            <div class="video-background">
+                <div id="youtube-player">
+                    <!-- Direct YouTube embed with autoplay and sound -->
+                    <iframe 
+                        id="travis-video"
+                        width="100%" 
+                        height="100%" 
+                        src="https://www.youtube.com/embed/68gLDQlVdQk?autoplay=1&mute=0&loop=1&playlist=68gLDQlVdQk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
+                        title="Travis Scott Concert Background" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            <div class="container">
+                <h2>Upcoming Tours</h2>
+                <div class="tours-grid">
+                    <div class="tour-card">
+                        <div class="tour-date">
+                            <span class="month">MAR</span>
+                            <span class="day">15</span>
+                            <span class="year">2025</span>
+                        </div>
+                        <div class="tour-info">
+                            <h3>Madison Square Garden</h3>
+                            <p class="location">New York, NY</p>
+                            <div class="ticket-btn-container">
+                                <a href="https://www.ticketmaster.com/travis-scott-tickets/artist/1970241" class="ticket-btn" target="_blank" rel="noopener">Get Tickets</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tour-card">
+                        <div class="tour-date">
+                            <span class="month">APR</span>
+                            <span class="day">02</span>
+                            <span class="year">2025</span>
+                        </div>
+                        <div class="tour-info">
+                            <h3>Crypto.com Arena</h3>
+                            <p class="location">Los Angeles, CA</p>
+                            <div class="ticket-btn-container">
+                                <a href="https://www.axs.com/artists/1116894/travis-scott-tickets" class="ticket-btn" target="_blank" rel="noopener">Get Tickets</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tour-card">
+                        <div class="tour-date">
+                            <span class="month">APR</span>
+                            <span class="day">18</span>
+                            <span class="year">2025</span>
+                        </div>
+                        <div class="tour-info">
+                            <h3>United Center</h3>
+                            <p class="location">Chicago, IL</p>
+                            <div class="ticket-btn-container">
+                                <a href="https://www.stubhub.com/travis-scott-tickets/performer/1000701/" class="ticket-btn" target="_blank" rel="noopener">Get Tickets</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tour-card">
+                        <div class="tour-date">
+                            <span class="month">MAY</span>
+                            <span class="day">05</span>
+                            <span class="year">2025</span>
+                        </div>
+                        <div class="tour-info">
+                            <h3>Toyota Center</h3>
+                            <p class="location">Houston, TX</p>
+                            <div class="ticket-btn-container">
+                                <a href="https://www.seatgeek.com/travis-scott-tickets" class="ticket-btn" target="_blank" rel="noopener">Get Tickets</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="ventures" class="section">
             <div class="container">
                 <h2>Business Ventures</h2>
@@ -194,6 +324,7 @@
                     <ul>
                         <li><a href="#biography">Biography</a></li>
                         <li><a href="#music">Music</a></li>
+                        <li><a href="#tours">Tours</a></li>
                         <li><a href="#ventures">Ventures</a></li>
                         <li><a href="#gallery">Gallery</a></li>
                     </ul>
@@ -216,5 +347,12 @@
 
     <script src="js/main.js"></script>
     <script src="js/3d-model.js"></script>
+    
+    <!-- Floating mute button that follows scroll -->
+    <div class="floating-control">
+        <button id="global-mute-toggle" aria-label="Mute or unmute all audio">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
 </body>
 </html> 
