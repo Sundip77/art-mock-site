@@ -221,7 +221,7 @@ const albums = [
         year: '2015',
         cover: 'https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Rodeo-Deluxe-1500.png?v=1699920600&width=1445',
         spotifyLink: 'https://open.spotify.com/album/4PWBTB6NYxuxQa5c2ROUZe',
-        videoId: 'NnOH3_NAw34' // Rodeo video - updated
+        videoId: 'KnZ8h3MRuYg' // Rodeo video - updated with new link
     },
     {
         title: 'Owl Pharaoh',
@@ -573,8 +573,13 @@ function updateBackgroundVideo(index, shouldAutoplay) {
     if (!albumBgVideo) return;
     
     // Create YouTube iframe for background
-    // Add start parameter for Days Before Rodeo video to start at 22 seconds
-    const startTime = album.title === 'Days Before Rodeo' ? '&start=22' : '';
+    // Add start parameter for specific videos to start at the right timestamp
+    let startTime = '';
+    if (album.title === 'Days Before Rodeo') {
+        startTime = '&start=22';
+    } else if (album.title === 'Rodeo') {
+        startTime = '&start=24';
+    }
     
     albumBgVideo.innerHTML = `
         <iframe 
