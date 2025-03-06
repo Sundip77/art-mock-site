@@ -51,44 +51,110 @@ function initCassetteModel() {
     spotLight.distance = 200;
     cassetteScene.add(spotLight);
     
-    // Load model
-    const loader = new THREE.GLTFLoader();
-    loader.load(
-        'models/cassette.gltf', // Update this path to your cassette model
-        function(gltf) {
-            cassetteModel = gltf.scene;
-            cassetteScene.add(cassetteModel);
-            
-            // Center the model
-            const box = new THREE.Box3().setFromObject(cassetteModel);
-            const center = box.getCenter(new THREE.Vector3());
-            cassetteModel.position.sub(center);
-            
-            // Scale the model
-            const scale = 1.5;
-            cassetteModel.scale.set(scale, scale, scale);
-            
-            // Enable shadows
-            cassetteModel.traverse((node) => {
-                if (node.isMesh) {
-                    node.castShadow = true;
-                    node.receiveShadow = true;
-                }
-            });
-
-            // Add initial rotation for better view
-            cassetteModel.rotation.x = Math.PI / 6;
-        },
-        function(xhr) {
-            console.log('Cassette model: ' + (xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        function(error) {
-            console.error('An error occurred loading the cassette model:', error);
-        }
-    );
+    // Create a simple cassette model since we're having issues with loading external models
+    createSimpleCassetteModel();
     
     // Start animation
     animateCassette();
+}
+
+function createSimpleCassetteModel() {
+    // Create a group to hold all cassette parts
+    cassetteModel = new THREE.Group();
+    
+    // Create materials
+    const bodyMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0x333333, 
+        specular: 0x111111,
+        shininess: 30
+    });
+    
+    const tapeMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0x111111, 
+        specular: 0x222222,
+        shininess: 50
+    });
+    
+    const labelMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0xffffff,
+        specular: 0x444444,
+        shininess: 10
+    });
+    
+    // Create cassette body
+    const bodyGeometry = new THREE.BoxGeometry(3, 0.3, 2);
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    body.castShadow = true;
+    body.receiveShadow = true;
+    cassetteModel.add(body);
+    
+    // Create label
+    const labelGeometry = new THREE.BoxGeometry(2.5, 0.05, 1.5);
+    const label = new THREE.Mesh(labelGeometry, labelMaterial);
+    label.position.y = 0.18;
+    label.castShadow = true;
+    label.receiveShadow = true;
+    cassetteModel.add(label);
+    
+    // Create tape reels
+    const reelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16);
+    
+    const leftReel = new THREE.Mesh(reelGeometry, tapeMaterial);
+    leftReel.position.set(-0.8, 0, 0);
+    leftReel.rotation.x = Math.PI / 2;
+    leftReel.castShadow = true;
+    leftReel.receiveShadow = true;
+    cassetteModel.add(leftReel);
+    
+    const rightReel = new THREE.Mesh(reelGeometry, tapeMaterial);
+    rightReel.position.set(0.8, 0, 0);
+    rightReel.rotation.x = Math.PI / 2;
+    rightReel.castShadow = true;
+    rightReel.receiveShadow = true;
+    cassetteModel.add(rightReel);
+    
+    // Create tape windows
+    const windowGeometry = new THREE.BoxGeometry(0.6, 0.1, 0.8);
+    const windowMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0x666666, 
+        transparent: true,
+        opacity: 0.7,
+        specular: 0x999999,
+        shininess: 100
+    });
+    
+    const leftWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+    leftWindow.position.set(-0.8, 0.2, 0);
+    leftWindow.castShadow = true;
+    leftWindow.receiveShadow = true;
+    cassetteModel.add(leftWindow);
+    
+    const rightWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+    rightWindow.position.set(0.8, 0.2, 0);
+    rightWindow.castShadow = true;
+    rightWindow.receiveShadow = true;
+    cassetteModel.add(rightWindow);
+    
+    // Add Travis Scott logo text to the label
+    // Since TextGeometry requires a font that we may not have loaded,
+    // let's create a simple plane with a texture instead
+    const textMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0xff6b00,
+        specular: 0x444444,
+        shininess: 10
+    });
+    
+    const textPlane = new THREE.PlaneGeometry(2, 0.4);
+    const textMesh = new THREE.Mesh(textPlane, textMaterial);
+    textMesh.position.set(0, 0.21, 0);
+    textMesh.rotation.x = -Math.PI / 2;
+    cassetteModel.add(textMesh);
+    
+    // Add the model to the scene
+    cassetteScene.add(cassetteModel);
+    
+    // Rotate for better view
+    cassetteModel.rotation.x = Math.PI / 6;
 }
 
 function animateCassette() {
