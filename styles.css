@@ -1558,16 +1558,11 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     animation: inputFocus 0.3s ease;
 }
 
-/* Button Animation */
-@keyframes buttonPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
+/* Button Hover Effect */
 .contact-grid .btn:hover,
 .tab-content .btn:hover {
-    animation: buttonPulse 0.5s ease infinite;
+    background-color: #fff;
+    color: var(--accent-color);
 }
 
 /* Modal Styles */
@@ -1758,6 +1753,12 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     text-decoration: underline;
 }
 
+/* Success Message Styling */
+#success-message {
+    text-align: center;
+    padding: 20px 0;
+}
+
 .success-icon {
     text-align: center;
     font-size: 60px;
@@ -1774,6 +1775,29 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 
 #success-text {
     margin-bottom: 25px;
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.6;
+}
+
+#success-details {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: left;
+    border-left: 3px solid #2ecc71;
+}
+
+#success-details p {
+    margin: 5px 0;
+    text-align: left;
+    color: #ddd;
+}
+
+#success-details strong {
+    color: #fff;
+    font-weight: 600;
 }
 
 /* Responsive Modal */

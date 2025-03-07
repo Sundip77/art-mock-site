@@ -54,6 +54,21 @@ document.addEventListener('DOMContentLoaded', function() {
             
             this.users.push(user);
             this.saveToStorage();
+            
+            // Send welcome email
+            sendEmail(email, 'Welcome to Travis Scott Fan Website', 
+                `<h2>Welcome to the Travis Scott Fan Community!</h2>
+                <p>Hi ${name},</p>
+                <p>Thank you for creating an account on our Travis Scott Fan Website. You now have access to exclusive content and features.</p>
+                <p>Your account details:</p>
+                <ul>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Account Created:</strong> ${new Date().toLocaleString()}</li>
+                </ul>
+                <p>Stay tuned for the latest updates on Travis Scott's music, tours, and merchandise!</p>
+                <p>Best regards,<br>The Travis Scott Fan Team</p>`
+            );
+            
             return user;
         },
         
@@ -82,8 +97,25 @@ document.addEventListener('DOMContentLoaded', function() {
             this.messages.push(newMessage);
             this.saveToStorage();
             
-            // Send to admin email (simulated)
-            console.log(`Message sent to admin: ${JSON.stringify(newMessage)}`);
+            // Send confirmation email to user
+            sendEmail(email, 'We received your message', 
+                `<h2>Thank You for Contacting Us!</h2>
+                <p>Hi ${name},</p>
+                <p>We have received your message and will get back to you as soon as possible.</p>
+                <p><strong>Your message:</strong></p>
+                <p style="background-color: #f5f5f5; padding: 10px; border-left: 3px solid #ff6b00;">${message}</p>
+                <p>Best regards,<br>The Travis Scott Fan Team</p>`
+            );
+            
+            // Send notification to admin
+            sendEmail('sandeepwork77@gmail.com', 'New Contact Form Submission', 
+                `<h2>New Message from Travis Scott Fan Website</h2>
+                <p><strong>From:</strong> ${name} (${email})</p>
+                <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+                <p><strong>Message:</strong></p>
+                <p style="background-color: #f5f5f5; padding: 10px; border-left: 3px solid #ff6b00;">${message}</p>`
+            );
+            
             return newMessage;
         },
         
@@ -105,8 +137,26 @@ document.addEventListener('DOMContentLoaded', function() {
             this.subscribers.push(email);
             this.saveToStorage();
             
-            // Send to admin email (simulated)
-            console.log(`New subscriber: ${email}`);
+            // Send welcome email to subscriber
+            sendEmail(email, 'Welcome to Travis Scott Newsletter', 
+                `<h2>Welcome to the Travis Scott Newsletter!</h2>
+                <p>Thank you for subscribing to our newsletter. You'll now receive the latest updates on Travis Scott's music, tours, and merchandise.</p>
+                <p><strong>Subscription details:</strong></p>
+                <ul>
+                    <li><strong>Email:</strong> ${email}</li>
+                    <li><strong>Subscribed on:</strong> ${new Date().toLocaleString()}</li>
+                </ul>
+                <p>Stay tuned for exciting news and exclusive content!</p>
+                <p>Best regards,<br>The Travis Scott Fan Team</p>`
+            );
+            
+            // Send notification to admin
+            sendEmail('sandeepwork77@gmail.com', 'New Newsletter Subscription', 
+                `<h2>New Newsletter Subscription</h2>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>`
+            );
+            
             return { success: true, message: 'Successfully subscribed to the newsletter!' };
         },
         
@@ -114,6 +164,39 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('subscribers', JSON.stringify(this.subscribers));
         }
     };
+    
+    // Email sending function (simulated)
+    function sendEmail(to, subject, htmlContent) {
+        // In a real implementation, this would connect to an email service API
+        // For now, we'll log to console and use localStorage to simulate
+        console.log(`Sending email to: ${to}`);
+        console.log(`Subject: ${subject}`);
+        console.log(`Content: ${htmlContent}`);
+        
+        // Store in localStorage for demo purposes
+        const emails = JSON.parse(localStorage.getItem('sent_emails')) || [];
+        emails.push({
+            to: to,
+            subject: subject,
+            content: htmlContent,
+            sentAt: new Date().toISOString()
+        });
+        localStorage.setItem('sent_emails', JSON.stringify(emails));
+        
+        // In a real implementation, you would use a service like EmailJS, SendGrid, etc.
+        // Example with EmailJS (would require their library):
+        /*
+        emailjs.send('service_id', 'template_id', {
+            to_email: to,
+            subject: subject,
+            message_html: htmlContent
+        }).then(function(response) {
+            console.log('Email sent successfully:', response);
+        }, function(error) {
+            console.error('Email failed to send:', error);
+        });
+        */
+    }
     
     // Add animation to buttons
     const allButtons = document.querySelectorAll('.btn');
@@ -330,6 +413,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Send login notification email
+        sendEmail(email, 'Login Notification - Travis Scott Fan Website', 
+            `<h2>New Login to Your Account</h2>
+            <p>Hi ${user.name},</p>
+            <p>We detected a new login to your Travis Scott Fan Website account.</p>
+            <p><strong>Login details:</strong></p>
+            <ul>
+                <li><strong>Time:</strong> ${new Date().toLocaleString()}</li>
+                <li><strong>Browser:</strong> ${navigator.userAgent}</li>
+            </ul>
+            <p>If this wasn't you, please secure your account immediately by changing your password.</p>
+            <p>Best regards,<br>The Travis Scott Fan Team</p>`
+        );
+        
         // Process the form data based on type
         processFormAfterAuth(user);
     }
@@ -423,6 +520,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Send password reset email
+        sendEmail(email, 'Password Reset - Travis Scott Fan Website', 
+            `<h2>Password Reset Request</h2>
+            <p>Hi ${user.name},</p>
+            <p>We received a request to reset your password for the Travis Scott Fan Website.</p>
+            <p>Click the link below to reset your password:</p>
+            <p><a href="https://laflamee.netlify.app/reset-password?token=123456789" style="background-color: #ff6b00; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
+            <p>If you didn't request this, you can safely ignore this email.</p>
+            <p>Best regards,<br>The Travis Scott Fan Team</p>`
+        );
+        
         // Show success message
         showSuccessMessage('Password reset link has been sent to your email address.');
     }
@@ -446,8 +554,13 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('contact-email').value = '';
             document.getElementById('contact-message').value = '';
             
-            // Show success message
-            showSuccessMessage('Your message has been sent successfully!');
+            // Show success message with details
+            showSuccessMessage(
+                'Your message has been sent successfully!',
+                'Message Sent',
+                currentFormData.email,
+                'Contact Form Submission'
+            );
             
         } else if (currentFormType === 'newsletter') {
             // Process newsletter form
@@ -456,8 +569,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Clear form
             document.getElementById('newsletter-email').value = '';
             
-            // Show success message
-            showSuccessMessage(result.message);
+            // Show success message with details
+            showSuccessMessage(
+                result.message,
+                result.success ? 'Subscribed' : 'Already Subscribed',
+                currentFormData.email,
+                'Newsletter Subscription'
+            );
         }
         
         // Reset current form data
@@ -465,8 +583,17 @@ document.addEventListener('DOMContentLoaded', function() {
         currentFormType = null;
     }
     
-    function showSuccessMessage(message) {
+    function showSuccessMessage(message, status = 'Completed', email = '', action = '') {
+        // Update success message content
         document.getElementById('success-text').textContent = message;
+        
+        // Update success details
+        document.getElementById('success-status').textContent = status;
+        document.getElementById('success-email').textContent = email || 'your@email.com';
+        document.getElementById('success-action').textContent = action;
+        document.getElementById('success-time').textContent = new Date().toLocaleString();
+        
+        // Show success tab
         switchTab('success-message');
     }
 }); 
