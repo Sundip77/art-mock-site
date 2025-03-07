@@ -1523,4 +1523,215 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 .spotify-link:active {
     transform: translateY(0);
     box-shadow: 0 2px 10px rgba(29, 185, 84, 0.2);
+}
+
+/* Contact Form Enhancements */
+.contact-grid input,
+.contact-grid textarea {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #444;
+}
+
+.contact-grid input:focus,
+.contact-grid textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+    outline: none;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1001;
+    overflow: auto;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #1a1a1a;
+    margin: 10vh auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s ease;
+    border: 1px solid #333;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--accent-color);
+}
+
+.modal-tabs {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #333;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #777;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-btn:after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #fff;
+}
+
+.tab-btn.active:after {
+    width: 100%;
+}
+
+.tab-btn:hover {
+    color: #fff;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content h3 {
+    margin-bottom: 20px;
+    font-size: 22px;
+    color: #fff;
+    text-align: center;
+}
+
+.tab-content p {
+    margin-bottom: 20px;
+    color: #aaa;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.tab-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-content input {
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    background-color: #222;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.tab-content input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
+    outline: none;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.remember-me input {
+    margin: 0 10px 0 0;
+    width: auto;
+}
+
+.remember-me label {
+    color: #aaa;
+    font-size: 14px;
+}
+
+.forgot-password, .back-to-login {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.forgot-password a, .back-to-login a {
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover, .back-to-login a:hover {
+    color: var(--accent-color);
+}
+
+.success-icon {
+    text-align: center;
+    font-size: 60px;
+    color: #2ecc71;
+    margin-bottom: 20px;
+}
+
+#success-text {
+    margin-bottom: 25px;
+}
+
+/* Responsive Modal */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+        margin: 5vh auto;
+        padding: 20px;
+    }
+    
+    .tab-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
 } 

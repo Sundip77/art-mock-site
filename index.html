@@ -341,30 +341,83 @@
                 <div class="contact-grid">
                     <div class="newsletter-form">
                         <h3>Join the Cactus Jack Family</h3>
-                        <form id="newsletter-form" action="https://formsubmit.co/sandeepwork77@gmail.com" method="POST">
-                            <input type="hidden" name="_subject" value="New newsletter subscription from Travis Scott Fan Website">
-                            <input type="hidden" name="_captcha" value="false">
-                            <input type="hidden" name="_next" value="https://laflamee.netlify.app/thank-you.html">
-                            <input type="email" name="email" placeholder="Your email address" required>
-                            <button type="submit" class="btn">Subscribe</button>
+                        <form id="newsletter-form">
+                            <input type="email" name="email" id="newsletter-email" placeholder="Your email address" required>
+                            <button type="button" class="btn" id="newsletter-submit">Subscribe</button>
                         </form>
                     </div>
                     <div class="contact-form">
                         <h3>Get in Touch</h3>
-                        <form id="contact-form" action="https://formsubmit.co/sandeepwork77@gmail.com" method="POST">
-                            <input type="hidden" name="_subject" value="New message from Travis Scott Fan Website">
-                            <input type="hidden" name="_captcha" value="false">
-                            <input type="hidden" name="_next" value="https://laflamee.netlify.app/thank-you.html">
-                            <input type="text" name="name" placeholder="Name" required>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <textarea name="message" placeholder="Message" required></textarea>
-                            <button type="submit" class="btn">Send Message</button>
+                        <form id="contact-form">
+                            <input type="text" name="name" id="contact-name" placeholder="Name" required>
+                            <input type="email" name="email" id="contact-email" placeholder="Email" required>
+                            <textarea name="message" id="contact-message" placeholder="Message" required></textarea>
+                            <button type="button" class="btn" id="contact-submit">Send Message</button>
                         </form>
                     </div>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Login/Signup Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <div id="login-tab" class="tab-content active">
+                <h3>Login to Continue</h3>
+                <form id="login-form">
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <button type="button" class="btn" id="login-btn">Login</button>
+                    <div class="forgot-password">
+                        <a href="#" id="forgot-password-link">Forgot Password?</a>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="signup-tab" class="tab-content">
+                <h3>Create an Account</h3>
+                <form id="signup-form">
+                    <input type="text" placeholder="Full Name" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <input type="password" placeholder="Confirm Password" required>
+                    <button type="button" class="btn" id="signup-btn">Sign Up</button>
+                </form>
+            </div>
+            
+            <div id="forgot-password-tab" class="tab-content">
+                <h3>Reset Password</h3>
+                <p>Enter your email address and we'll send you a link to reset your password.</p>
+                <form id="reset-form">
+                    <input type="email" placeholder="Email" required>
+                    <button type="button" class="btn" id="reset-btn">Send Reset Link</button>
+                </form>
+                <div class="back-to-login">
+                    <a href="#" id="back-to-login-link">Back to Login</a>
+                </div>
+            </div>
+            
+            <div id="success-message" class="tab-content">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Success!</h3>
+                <p id="success-text">Your message has been sent successfully.</p>
+                <button type="button" class="btn" id="success-btn">Continue</button>
+            </div>
+        </div>
+    </div>
 
     <footer class="main-footer">
         <div class="container">
@@ -398,6 +451,7 @@
     <script src="js/main.js"></script>
     <script src="js/3d-model.js"></script>
     <script src="js/travis-chatbot.js"></script>
+    <script src="js/contact-auth.js"></script>
     
     <!-- Floating mute button that follows scroll -->
     <div class="floating-control">
