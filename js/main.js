@@ -8,7 +8,7 @@ mobileMenu.addEventListener('click', () => {
 });
 
 // Global audio state
-let globalMuted = false;
+let isMuted = false;
 
 // Track active section for video control
 let activeSection = null;
@@ -16,80 +16,69 @@ let sectionVideos = {};
 
 // Function to toggle mute state for all audio elements
 function toggleGlobalMute() {
-    globalMuted = !globalMuted;
+    isMuted = !isMuted;
     
-    // Update mute button icon
-    const muteBtn = document.getElementById('global-mute-toggle');
-    if (muteBtn) {
-        const icon = muteBtn.querySelector('i');
-        if (icon) {
-            if (globalMuted) {
-                icon.className = 'fas fa-volume-mute';
-            } else {
-                icon.className = 'fas fa-volume-up';
-            }
-        }
+    // Update icon
+    const muteIcon = document.querySelector('#global-mute-toggle i');
+    if (muteIcon) {
+        muteIcon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
     }
     
-    // Update all audio elements
+    // Update all audio/video elements
     updateAllAudioElements();
+    
+    console.log('Global mute toggled. Muted:', isMuted);
 }
 
 // Function to update all audio elements based on global mute state
 function updateAllAudioElements() {
+    // Update all audio elements
+    const audioElements = document.querySelectorAll('audio');
+    audioElements.forEach(audio => {
+        audio.muted = isMuted;
+    });
+    
+    // Update all video elements
+    const videoElements = document.querySelectorAll('video');
+    videoElements.forEach(video => {
+        video.muted = isMuted;
+    });
+    
     // Update YouTube iframes
     const youtubeIframes = document.querySelectorAll('iframe[src*="youtube.com"]');
     youtubeIframes.forEach(iframe => {
         let src = iframe.src;
-        if (globalMuted) {
-            // Mute the video
-            if (src.includes('mute=0')) {
-                src = src.replace('mute=0', 'mute=1');
-            } else if (!src.includes('mute=1')) {
-                src += (src.includes('?') ? '&' : '?') + 'mute=1';
-            }
+        
+        // Remove existing mute parameter
+        src = src.replace(/(&|\?)mute=\d/g, '');
+        
+        // Add appropriate mute parameter
+        if (src.includes('?')) {
+            src += '&mute=' + (isMuted ? '1' : '0');
         } else {
-            // Unmute the video
-            if (src.includes('mute=1')) {
-                src = src.replace('mute=1', 'mute=0');
-            } else if (!src.includes('mute=0')) {
-                src += (src.includes('?') ? '&' : '?') + 'mute=0';
-            }
+            src += '?mute=' + (isMuted ? '1' : '0');
         }
         
-        // Only update if the source has changed
-        if (src !== iframe.src) {
-            iframe.src = src;
-        }
+        // Update src to apply changes
+        iframe.src = src;
     });
     
-    // Update HTML5 audio elements
-    const audioElements = document.querySelectorAll('audio');
-    audioElements.forEach(audio => {
-        audio.muted = globalMuted;
-    });
-    
-    // Update HTML5 video elements
-    const videoElements = document.querySelectorAll('video');
-    videoElements.forEach(video => {
-        video.muted = globalMuted;
-    });
-    
-    // Update Spotify iframes
+    // Update Spotify iframes (they don't support muting via parameters, so we pause them)
     const spotifyIframes = document.querySelectorAll('iframe[src*="spotify.com"]');
-    spotifyIframes.forEach(iframe => {
-        try {
-            // This is a best effort - Spotify doesn't always allow direct control
-            if (iframe.contentWindow) {
-                const message = globalMuted ? 'pause' : 'play';
-                iframe.contentWindow.postMessage({ command: message }, '*');
+    if (isMuted) {
+        spotifyIframes.forEach(iframe => {
+            // Store current src to restore later
+            iframe.dataset.originalSrc = iframe.src;
+            iframe.src = 'about:blank';
+        });
+    } else {
+        spotifyIframes.forEach(iframe => {
+            // Restore original src if available
+            if (iframe.dataset.originalSrc) {
+                iframe.src = iframe.dataset.originalSrc;
             }
-        } catch (e) {
-            console.error('Error controlling Spotify iframe:', e);
-        }
-    });
-    
-    console.log('Global audio state updated:', globalMuted ? 'Muted' : 'Unmuted');
+        });
+    }
 }
 
 // Function to pause all videos except in the active section
@@ -298,8 +287,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Setup observers for animations
+    // Setup observers for animations and video control
     setupSectionObservers();
+    setupVideoControlObservers();
 });
 
 // Function to set up intersection observers for sections with videos
@@ -697,7 +687,7 @@ function updateBackgroundVideo(index, shouldAutoplay) {
         <iframe 
             width="100%" 
             height="100%" 
-            src="https://www.youtube.com/embed/${album.videoId}?autoplay=${shouldAutoplay ? '1' : '0'}&mute=${globalMuted ? '1' : '0'}&loop=1&playlist=${album.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1${startTime}" 
+            src="https://www.youtube.com/embed/${album.videoId}?autoplay=${shouldAutoplay ? '1' : '0'}&mute=${isMuted ? '1' : '0'}&loop=1&playlist=${album.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1${startTime}" 
             title="${album.title} Background" 
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -836,4 +826,92 @@ function setupAnimationObservers() {
             observer.observe(section);
         });
     }
+}
+
+// Setup observers to control video playback based on visibility
+function setupVideoControlObservers() {
+    const musicSection = document.getElementById('music');
+    const toursSection = document.getElementById('tours');
+    
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.target.id === 'music') {
+                    handleMusicSectionVisibility(entry.isIntersecting);
+                } else if (entry.target.id === 'tours') {
+                    handleToursSectionVisibility(entry.isIntersecting);
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        if (musicSection) observer.observe(musicSection);
+        if (toursSection) observer.observe(toursSection);
+    }
+}
+
+// Handle music section visibility
+function handleMusicSectionVisibility(isVisible) {
+    const albumBgVideo = document.querySelector('#album-bg-video iframe');
+    const spotifyPlayer = document.querySelector('.music-player iframe');
+    
+    if (albumBgVideo) {
+        if (isVisible) {
+            // If section is visible, ensure video is playing
+            let src = albumBgVideo.src;
+            if (src.includes('autoplay=0')) {
+                src = src.replace('autoplay=0', 'autoplay=1');
+            } else if (!src.includes('autoplay=1')) {
+                src += '&autoplay=1';
+            }
+            albumBgVideo.src = src;
+        } else {
+            // If section is not visible, pause video
+            let src = albumBgVideo.src;
+            if (src.includes('autoplay=1')) {
+                src = src.replace('autoplay=1', 'autoplay=0');
+            }
+            albumBgVideo.src = src;
+        }
+    }
+    
+    // Handle Spotify player
+    if (spotifyPlayer) {
+        if (!isVisible && !isMuted) {
+            // Store current src to restore later
+            spotifyPlayer.dataset.originalSrc = spotifyPlayer.src;
+            spotifyPlayer.src = 'about:blank';
+        } else if (isVisible && !isMuted && spotifyPlayer.dataset.originalSrc) {
+            // Restore original src if available
+            spotifyPlayer.src = spotifyPlayer.dataset.originalSrc;
+        }
+    }
+    
+    console.log('Music section visibility changed:', isVisible);
+}
+
+// Handle tours section visibility
+function handleToursSectionVisibility(isVisible) {
+    const tourVideo = document.querySelector('#youtube-player iframe');
+    
+    if (tourVideo) {
+        if (isVisible) {
+            // If section is visible, ensure video is playing
+            let src = tourVideo.src;
+            if (src.includes('autoplay=0')) {
+                src = src.replace('autoplay=0', 'autoplay=1');
+            } else if (!src.includes('autoplay=1')) {
+                src += '&autoplay=1';
+            }
+            tourVideo.src = src;
+        } else {
+            // If section is not visible, pause video
+            let src = tourVideo.src;
+            if (src.includes('autoplay=1')) {
+                src = src.replace('autoplay=1', 'autoplay=0');
+            }
+            tourVideo.src = src;
+        }
+    }
+    
+    console.log('Tours section visibility changed:', isVisible);
 } 
