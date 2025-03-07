@@ -342,6 +342,8 @@
                     <div class="contact-grid">
                         <div class="newsletter-form">
                             <h3>Join the Cactus Jack Family</h3>
+                            <div id="newsletter-error" class="error-message"></div>
+                            <div id="newsletter-success" class="success-message">Thanks for subscribing! You'll receive updates about Travis Scott.</div>
                             <form id="newsletter-form">
                                 <input type="email" name="email" id="newsletter-email" placeholder="Your email address" required>
                                 <button type="button" class="btn" id="newsletter-submit">Subscribe</button>
@@ -349,6 +351,7 @@
                         </div>
                         <div class="contact-form">
                             <h3>Get in Touch</h3>
+                            <div id="contact-error" class="error-message"></div>
                             <form id="contact-form">
                                 <input type="text" name="name" id="contact-name" placeholder="Name" required>
                                 <input type="email" name="email" id="contact-email" placeholder="Email" required>
@@ -372,6 +375,8 @@
                 
                 <div id="login-tab" class="tab-content active">
                     <h3>Login to Continue</h3>
+                    <div id="login-error" class="error-message"></div>
+                    <div id="login-success" class="success-message">Login successful! Redirecting...</div>
                     <form id="login-form">
                         <input type="email" placeholder="Email" required>
                         <input type="password" placeholder="Password" required>
@@ -388,6 +393,8 @@
                 
                 <div id="signup-tab" class="tab-content">
                     <h3>Create an Account</h3>
+                    <div id="signup-error" class="error-message"></div>
+                    <div id="signup-success" class="success-message">Sign up successful! Please check your email to confirm your account.</div>
                     <form id="signup-form">
                         <input type="text" placeholder="Full Name" required>
                         <input type="email" placeholder="Email" required>
@@ -399,6 +406,8 @@
                 
                 <div id="forgot-password-tab" class="tab-content">
                     <h3>Reset Password</h3>
+                    <div id="reset-error" class="error-message"></div>
+                    <div id="reset-success" class="success-message">Password reset email sent! Please check your inbox.</div>
                     <p>Enter your email address and we'll send you a link to reset your password.</p>
                     <form id="reset-form">
                         <input type="email" placeholder="Email" required>
@@ -461,6 +470,18 @@
     <script src="js/3d-model.js"></script>
     <script src="js/travis-chatbot.js"></script>
     <script src="js/contact-auth.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase client
+        const supabaseClient = {
+            createClient: function(url, key) {
+                return supabase.createClient(url, key);
+            }
+        };
+    </script>
+    <script src="js/supabase-client.js"></script>
     
     <!-- Floating controls that follow scroll -->
     <div class="floating-control">

@@ -1812,4 +1812,45 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
         padding: 10px 15px;
         font-size: 14px;
     }
+}
+
+/* Error and Success Messages */
+.error-message, .success-message {
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    display: none;
+}
+
+.error-message {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    color: #ff0000;
+}
+
+.success-message {
+    background-color: rgba(0, 255, 0, 0.1);
+    border: 1px solid rgba(0, 255, 0, 0.3);
+    color: #00cc00;
+}
+
+/* Auth Links */
+.auth-link {
+    margin-left: 15px;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #ff6b00;
+}
+
+.sign-out-link, .profile-link {
+    display: none;
+}
+
+/* User Content */
+.user-content {
+    display: none;
 } 
