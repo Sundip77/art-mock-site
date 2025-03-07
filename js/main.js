@@ -377,6 +377,7 @@ if (albumsGrid) {
     const powerButton = document.getElementById('power-button');
     const mainContent = document.getElementById('main-content');
     const showMonitorButton = document.getElementById('show-monitor-button');
+    const chatbotToggle = document.getElementById('chatbot-toggle');
     
     // Function to show the monitor overlay
     function showMonitor() {
@@ -420,6 +421,22 @@ if (albumsGrid) {
     if (showMonitorButton) {
         showMonitorButton.addEventListener('click', showMonitor);
     }
+    
+    // Add click event to chatbot toggle button
+    if (chatbotToggle) {
+        chatbotToggle.addEventListener('click', function() {
+            // This will be handled by the travis-chatbot.js file
+            // Just dispatch a custom event that the chatbot script can listen for
+            document.dispatchEvent(new CustomEvent('toggleChatbot'));
+        });
+    }
+    
+    // Initialize other features
+    initAlbumCarousel();
+    initGallery();
+    initMobileMenu();
+    
+    // Rest of your existing code...
 });
 
 // Function to set up intersection observers for sections with videos
