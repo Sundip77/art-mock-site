@@ -7,7 +7,7 @@ mobileMenu.addEventListener('click', () => {
     mobileMenu.classList.toggle('active');
 });
 
-// Global audio state
+// Global state
 let isMuted = false;
 
 // Track active section for video control
@@ -279,155 +279,331 @@ document.addEventListener('DOMContentLoaded', function() {
     initMobileMenu();
     initHeroAnimations();
     
-    // Global mute functionality
-    const globalMuteToggle = document.getElementById('global-mute-toggle');
-    if (globalMuteToggle) {
+    // Set up mute button
+    const muteButton = document.getElementById('global-mute-toggle');
+    if (muteButton) {
         console.log('Mute button found, adding event listener');
-        globalMuteToggle.addEventListener('click', function() {
-            toggleGlobalMute();
+        muteButton.addEventListener('click', function() {
+            isMuted = !isMuted;
+            const icon = muteButton.querySelector('i');
+            if (icon) {
+                icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+            }
+            
+            // Apply mute state to all audio/video elements
+            const allAudio = document.querySelectorAll('audio');
+            allAudio.forEach(audio => { audio.muted = isMuted; });
+            
+            const allVideo = document.querySelectorAll('video');
+            allVideo.forEach(video => { video.muted = isMuted; });
+            
+            // Handle YouTube iframes
+            const youtubeIframes = document.querySelectorAll('iframe[src*="youtube.com"]');
+            youtubeIframes.forEach(iframe => {
+                let src = iframe.src;
+                // Remove existing mute parameter
+                src = src.replace(/(&|\?)mute=\d/g, '');
+                // Add new mute parameter
+                src += (src.includes('?') ? '&' : '?') + 'mute=' + (isMuted ? '1' : '0');
+                iframe.src = src;
+            });
+            
+            // Handle Spotify iframes
+            const spotifyIframes = document.querySelectorAll('iframe[src*="spotify.com"]');
+            if (isMuted) {
+                spotifyIframes.forEach(iframe => {
+                    iframe.dataset.originalSrc = iframe.src;
+                    iframe.src = 'about:blank';
+                });
+            } else {
+                spotifyIframes.forEach(iframe => {
+                    if (iframe.dataset.originalSrc) {
+                        iframe.src = iframe.dataset.originalSrc;
+                    }
+                });
+            }
         });
-    } else {
-        console.error('Mute button not found');
     }
     
-    // Add click event to chatbot toggle button
+    // Set up chatbot toggle
     const chatbotToggle = document.getElementById('chatbot-toggle');
     if (chatbotToggle) {
         console.log('Chatbot button found, adding event listener');
         chatbotToggle.addEventListener('click', function() {
-            console.log('Chatbot button clicked');
-            // This will be handled by the travis-chatbot.js file
-            // Just dispatch a custom event that the chatbot script can listen for
-            document.dispatchEvent(new CustomEvent('toggleChatbot'));
+            const chatbotContainer = document.getElementById('travis-chatbot');
+            if (chatbotContainer) {
+                chatbotContainer.classList.toggle('active');
+                
+                // Focus on input when opened
+                if (chatbotContainer.classList.contains('active')) {
+                    setTimeout(() => {
+                        const input = document.getElementById('chatbot-input');
+                        if (input) input.focus();
+                    }, 300);
+                }
+            } else {
+                // Create chatbot if it doesn't exist
+                createChatbot();
+            }
         });
-    } else {
-        console.error('Chatbot button not found');
     }
     
-    // Setup observers for animations
-    setupSectionObservers();
-    
-    // Setup video control observers
-    setupVideoControlObservers();
+    // Set up section observers for video control
+    setupVideoObservers();
     
     // Initial check for videos
-    checkAllVideos();
+    checkVisibleSections();
+    
+    // Add scroll event listener to check visible sections
+    window.addEventListener('scroll', checkVisibleSections);
 });
 
-// Function to set up intersection observers for sections with videos
-function setupSectionObservers() {
-    const sections = ['music', 'tours'];
+// Function to create chatbot
+function createChatbot() {
+    const chatbotHTML = `
+        <div id="travis-chatbot" class="chatbot-container active">
+            <div class="chatbot-header">
+                <h3>Travis Scott AI</h3>
+                <button id="chatbot-close" aria-label="Close chatbot">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="chatbot-message bot-message">
+                    <div class="chatbot-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="chatbot-content">
+                        Hey, I'm Travis Scott's AI assistant. How can I help you today? IT'S LIT!
+                    </div>
+                </div>
+            </div>
+            <div class="chatbot-input-container">
+                <input type="text" id="chatbot-input" placeholder="Type your message...">
+                <button id="chatbot-send" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    `;
     
-    // Create an intersection observer
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const sectionId = entry.target.id;
-            
-            if (entry.isIntersecting) {
-                console.log(`${sectionId} section is now visible`);
-                activeSection = sectionId;
-                
-                // Play video in this section
-                if (sectionId === 'music') {
-                    console.log('Music section is visible, forcing video play');
-                    // Force video to play by recreating it
-                    updateBackgroundVideo(currentAlbumIndex, true);
-                    
-                    // Double-check after a short delay to ensure it's playing
-                    setTimeout(() => {
-                        const iframe = document.querySelector('#album-bg-video iframe');
-                        if (iframe) {
-                            console.log('Refreshing music video iframe to ensure autoplay');
-                            const currentSrc = iframe.src;
-                            iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
-                        }
-                    }, 500);
-                } else if (sectionId === 'tours') {
-                    const toursVideo = document.querySelector('#youtube-player iframe');
-                    if (toursVideo) {
-                        let src = toursVideo.src;
-                        if (src.includes('autoplay=0')) {
-                            src = src.replace('autoplay=0', 'autoplay=1');
-                            toursVideo.src = src;
-                        }
-                    }
-                }
-                
-                // Pause videos in other sections
-                pauseInactiveVideos();
-            } else {
-                console.log(`${sectionId} section is no longer visible`);
-                
-                // Pause video in this section
-                if (sectionId === 'music') {
-                    const albumBgVideo = document.querySelector('#album-bg-video iframe');
-                    if (albumBgVideo) {
-                        let src = albumBgVideo.src;
-                        if (src.includes('autoplay=1')) {
-                            src = src.replace('autoplay=1', 'autoplay=0');
-                            albumBgVideo.src = src;
-                        }
-                    }
-                } else if (sectionId === 'tours') {
-                    const toursVideo = document.querySelector('#youtube-player iframe');
-                    if (toursVideo) {
-                        let src = toursVideo.src;
-                        if (src.includes('autoplay=1')) {
-                            src = src.replace('autoplay=1', 'autoplay=0');
-                            toursVideo.src = src;
-                        }
-                    }
-                }
-                
-                if (activeSection === sectionId) {
-                    activeSection = null;
-                }
+    document.body.insertAdjacentHTML('beforeend', chatbotHTML);
+    
+    // Set up chatbot functionality
+    const chatbotContainer = document.getElementById('travis-chatbot');
+    const chatbotCloseBtn = document.getElementById('chatbot-close');
+    const chatbotInput = document.getElementById('chatbot-input');
+    const chatbotSend = document.getElementById('chatbot-send');
+    
+    // Focus on input
+    setTimeout(() => {
+        if (chatbotInput) chatbotInput.focus();
+    }, 300);
+    
+    // Close button
+    if (chatbotCloseBtn) {
+        chatbotCloseBtn.addEventListener('click', function() {
+            chatbotContainer.classList.remove('active');
+        });
+    }
+    
+    // Send message
+    if (chatbotSend && chatbotInput) {
+        chatbotSend.addEventListener('click', sendChatMessage);
+        chatbotInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
             }
         });
-    }, { threshold: 0.2 }); // Lower threshold to detect section earlier
+    }
     
-    // Observe each section
-    sections.forEach(sectionId => {
-        const section = document.getElementById(sectionId);
-        if (section) {
-            observer.observe(section);
-        }
-    });
-    
-    // Also set up scroll event to handle video pausing
-    window.addEventListener('scroll', () => {
-        const musicSection = document.getElementById('music');
-        if (musicSection && isElementInViewport(musicSection)) {
-            console.log('Music section detected in viewport during scroll');
-            // Check if video is already playing
-            const iframe = document.querySelector('#album-bg-video iframe');
-            if (iframe && iframe.src.includes('autoplay=0')) {
-                console.log('Forcing video play during scroll');
-                iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
-            }
-        }
-        pauseInactiveVideos();
-    }, { passive: true });
-    
-    // Check if music section is visible on page load
-    setTimeout(() => {
-        const musicSection = document.getElementById('music');
-        if (musicSection && isElementInViewport(musicSection)) {
-            console.log('Music section is visible on page load, playing Utopia video');
-            updateBackgroundVideo(currentAlbumIndex, true);
+    function sendChatMessage() {
+        const message = chatbotInput.value.trim();
+        if (message) {
+            addChatMessage('user', message);
+            chatbotInput.value = '';
             
-            // Double-check after a short delay
+            // Get bot response
             setTimeout(() => {
-                const iframe = document.querySelector('#album-bg-video iframe');
-                if (iframe) {
-                    console.log('Ensuring autoplay is enabled');
-                    if (iframe.src.includes('autoplay=0')) {
-                        iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
-                    }
-                }
-            }, 1000);
+                const response = getChatbotResponse(message);
+                addChatMessage('bot', response);
+            }, 500);
         }
-    }, 1000);
+    }
+    
+    function addChatMessage(sender, message) {
+        const chatbotMessages = document.getElementById('chatbot-messages');
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('chatbot-message', `${sender}-message`);
+        
+        const avatar = document.createElement('div');
+        avatar.classList.add('chatbot-avatar');
+        
+        if (sender === 'bot') {
+            avatar.innerHTML = '<i class="fas fa-robot"></i>';
+        } else {
+            avatar.innerHTML = '<i class="fas fa-user"></i>';
+        }
+        
+        const content = document.createElement('div');
+        content.classList.add('chatbot-content');
+        content.textContent = message;
+        
+        messageElement.appendChild(avatar);
+        messageElement.appendChild(content);
+        
+        chatbotMessages.appendChild(messageElement);
+        
+        // Scroll to bottom
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+    
+    function getChatbotResponse(message) {
+        message = message.toLowerCase();
+        
+        if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+            return "Hey, I'm Travis Scott's AI assistant. What can I help you with?";
+        } else if (message.includes('tour') || message.includes('concert')) {
+            return "Check out the Tours section for my upcoming shows. Hope to see you there, it's lit!";
+        } else if (message.includes('album') || message.includes('music')) {
+            return "My latest album is 'Utopia'. You can stream it on all platforms. STRAIGHT UP!";
+        } else if (message.includes('merch') || message.includes('clothing')) {
+            return "You can find my official merch at shop.travisscott.com. CACTUS JACK!";
+        } else if (message.includes('astroworld')) {
+            return "Astroworld was a special album for me. Wish you were here!";
+        } else if (message.includes('cactus jack')) {
+            return "Cactus Jack is my record label and brand. IT'S LIT!";
+        } else {
+            return "That's dope! Feel free to explore the site for more info about my music, tours, and ventures.";
+        }
+    }
+}
+
+// Function to check which sections are visible
+function checkVisibleSections() {
+    const musicSection = document.getElementById('music');
+    const toursSection = document.getElementById('tours');
+    
+    if (musicSection) {
+        const isMusicVisible = isElementInViewport(musicSection);
+        handleMusicSectionVisibility(isMusicVisible);
+    }
+    
+    if (toursSection) {
+        const isToursVisible = isElementInViewport(toursSection);
+        handleToursSectionVisibility(isToursVisible);
+    }
+}
+
+// Function to set up video observers
+function setupVideoObservers() {
+    const musicSection = document.getElementById('music');
+    const toursSection = document.getElementById('tours');
+    
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.target.id === 'music') {
+                    handleMusicSectionVisibility(entry.isIntersecting);
+                } else if (entry.target.id === 'tours') {
+                    handleToursSectionVisibility(entry.isIntersecting);
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        if (musicSection) observer.observe(musicSection);
+        if (toursSection) observer.observe(toursSection);
+    }
+}
+
+// Function to handle music section visibility
+function handleMusicSectionVisibility(isVisible) {
+    const albumBgVideo = document.querySelector('#album-bg-video iframe');
+    const spotifyPlayer = document.querySelector('.music-player iframe');
+    
+    if (albumBgVideo) {
+        if (isVisible) {
+            // If section is visible, ensure video is playing
+            let src = albumBgVideo.src;
+            if (src.includes('autoplay=0')) {
+                src = src.replace('autoplay=0', 'autoplay=1');
+            } else if (!src.includes('autoplay=1')) {
+                src += '&autoplay=1';
+            }
+            
+            // Ensure mute state is respected
+            if (src.includes('mute=0') && isMuted) {
+                src = src.replace('mute=0', 'mute=1');
+            } else if (src.includes('mute=1') && !isMuted) {
+                src = src.replace('mute=1', 'mute=0');
+            }
+            
+            albumBgVideo.src = src;
+        } else {
+            // If section is not visible, pause video
+            let src = albumBgVideo.src;
+            if (src.includes('autoplay=1')) {
+                src = src.replace('autoplay=1', 'autoplay=0');
+            }
+            albumBgVideo.src = src;
+        }
+    }
+    
+    // Handle Spotify player
+    if (spotifyPlayer) {
+        if (!isVisible) {
+            // Store current src to restore later
+            spotifyPlayer.dataset.originalSrc = spotifyPlayer.src;
+            spotifyPlayer.src = 'about:blank';
+        } else if (isVisible && !isMuted && spotifyPlayer.dataset.originalSrc) {
+            // Restore original src if available
+            spotifyPlayer.src = spotifyPlayer.dataset.originalSrc;
+        }
+    }
+}
+
+// Function to handle tours section visibility
+function handleToursSectionVisibility(isVisible) {
+    const tourVideo = document.querySelector('#youtube-player iframe');
+    
+    if (tourVideo) {
+        if (isVisible) {
+            // If section is visible, ensure video is playing
+            let src = tourVideo.src;
+            if (src.includes('autoplay=0')) {
+                src = src.replace('autoplay=0', 'autoplay=1');
+            } else if (!src.includes('autoplay=1')) {
+                src += '&autoplay=1';
+            }
+            
+            // Ensure mute state is respected
+            if (src.includes('mute=0') && isMuted) {
+                src = src.replace('mute=0', 'mute=1');
+            } else if (src.includes('mute=1') && !isMuted) {
+                src = src.replace('mute=1', 'mute=0');
+            }
+            
+            tourVideo.src = src;
+        } else {
+            // If section is not visible, pause video
+            let src = tourVideo.src;
+            if (src.includes('autoplay=1')) {
+                src = src.replace('autoplay=1', 'autoplay=0');
+            }
+            tourVideo.src = src;
+        }
+    }
+}
+
+// Function to check if element is in viewport
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.bottom >= 0 &&
+        rect.left <= (window.innerWidth || document.documentElement.clientWidth) &&
+        rect.right >= 0
+    );
 }
 
 // Function to initialize the album carousel
@@ -730,20 +906,6 @@ function getNextIndex(currentIndex) {
     return (currentIndex + 1) % albums.length;
 }
 
-// Helper function to check if element is in viewport
-function isElementInViewport(el) {
-    if (!el) return false;
-    
-    const rect = el.getBoundingClientRect();
-    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-    
-    // Consider an element visible if at least 30% of it is in the viewport
-    const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
-    const elementHeight = rect.bottom - rect.top;
-    
-    return visibleHeight > 0 && (visibleHeight / elementHeight) > 0.3;
-}
-
 // Initialize parallax effect for gallery
 function initParallaxEffect() {
     const parallaxContainer = document.getElementById('parallax-container');
@@ -847,148 +1009,5 @@ function setupAnimationObservers() {
         sections.forEach(section => {
             observer.observe(section);
         });
-    }
-}
-
-// Setup observers to control video playback based on visibility
-function setupVideoControlObservers() {
-    console.log('Setting up video control observers');
-    
-    const musicSection = document.getElementById('music');
-    const toursSection = document.getElementById('tours');
-    
-    if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.target.id === 'music') {
-                    handleMusicSectionVisibility(entry.isIntersecting);
-                } else if (entry.target.id === 'tours') {
-                    handleToursSectionVisibility(entry.isIntersecting);
-                }
-            });
-        }, { threshold: 0.2 });
-        
-        if (musicSection) {
-            observer.observe(musicSection);
-            console.log('Observing music section');
-        }
-        
-        if (toursSection) {
-            observer.observe(toursSection);
-            console.log('Observing tours section');
-        }
-    } else {
-        // Fallback for browsers that don't support IntersectionObserver
-        window.addEventListener('scroll', checkAllVideos);
-        window.addEventListener('resize', checkAllVideos);
-        console.log('Using scroll/resize events for video control (fallback)');
-    }
-}
-
-// Handle music section visibility
-function handleMusicSectionVisibility(isVisible) {
-    console.log('Music section visibility changed:', isVisible);
-    
-    const albumBgVideo = document.querySelector('#album-bg-video iframe');
-    const spotifyPlayer = document.querySelector('.music-player iframe');
-    
-    if (albumBgVideo) {
-        if (isVisible) {
-            // If section is visible, ensure video is playing
-            let src = albumBgVideo.src;
-            if (src.includes('autoplay=0')) {
-                src = src.replace('autoplay=0', 'autoplay=1');
-            } else if (!src.includes('autoplay=1')) {
-                src += '&autoplay=1';
-            }
-            
-            // Ensure mute state is respected
-            if (src.includes('mute=0') && isMuted) {
-                src = src.replace('mute=0', 'mute=1');
-            } else if (src.includes('mute=1') && !isMuted) {
-                src = src.replace('mute=1', 'mute=0');
-            }
-            
-            albumBgVideo.src = src;
-            console.log('Album background video playing:', src);
-        } else {
-            // If section is not visible, pause video
-            let src = albumBgVideo.src;
-            if (src.includes('autoplay=1')) {
-                src = src.replace('autoplay=1', 'autoplay=0');
-            }
-            albumBgVideo.src = src;
-            console.log('Album background video paused');
-        }
-    }
-    
-    // Handle Spotify player
-    if (spotifyPlayer) {
-        if (!isVisible) {
-            // Store current src to restore later
-            spotifyPlayer.dataset.originalSrc = spotifyPlayer.src;
-            spotifyPlayer.src = 'about:blank';
-            console.log('Spotify player paused');
-        } else if (isVisible && !isMuted && spotifyPlayer.dataset.originalSrc) {
-            // Restore original src if available
-            spotifyPlayer.src = spotifyPlayer.dataset.originalSrc;
-            console.log('Spotify player restored');
-        }
-    }
-}
-
-// Handle tours section visibility
-function handleToursSectionVisibility(isVisible) {
-    console.log('Tours section visibility changed:', isVisible);
-    
-    const tourVideo = document.querySelector('#youtube-player iframe');
-    
-    if (tourVideo) {
-        if (isVisible) {
-            // If section is visible, ensure video is playing
-            let src = tourVideo.src;
-            if (src.includes('autoplay=0')) {
-                src = src.replace('autoplay=0', 'autoplay=1');
-            } else if (!src.includes('autoplay=1')) {
-                src += '&autoplay=1';
-            }
-            
-            // Ensure mute state is respected
-            if (src.includes('mute=0') && isMuted) {
-                src = src.replace('mute=0', 'mute=1');
-            } else if (src.includes('mute=1') && !isMuted) {
-                src = src.replace('mute=1', 'mute=0');
-            }
-            
-            tourVideo.src = src;
-            console.log('Tour video playing:', src);
-        } else {
-            // If section is not visible, pause video
-            let src = tourVideo.src;
-            if (src.includes('autoplay=1')) {
-                src = src.replace('autoplay=1', 'autoplay=0');
-            }
-            tourVideo.src = src;
-            console.log('Tour video paused');
-        }
-    }
-}
-
-// Function to check all videos and pause those not in viewport
-function checkAllVideos() {
-    console.log('Checking all videos');
-    
-    // Check if music section is in viewport
-    const musicSection = document.getElementById('music');
-    if (musicSection) {
-        const isMusicVisible = isElementInViewport(musicSection);
-        handleMusicSectionVisibility(isMusicVisible);
-    }
-    
-    // Check if tours section is in viewport
-    const toursSection = document.getElementById('tours');
-    if (toursSection) {
-        const isToursVisible = isElementInViewport(toursSection);
-        handleToursSectionVisibility(isToursVisible);
     }
 } 
