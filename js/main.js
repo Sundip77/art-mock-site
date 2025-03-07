@@ -371,6 +371,36 @@ if (albumsGrid) {
     setupAnimationObservers();
 
     initHeroAnimations();
+
+    // Monitor Power Button Effect
+    const powerButton = document.getElementById('power-button');
+    const monitorOverlay = document.getElementById('monitor-overlay');
+    const mainContent = document.getElementById('main-content');
+    
+    if (powerButton && monitorOverlay && mainContent) {
+        // Check if user has already entered the site
+        if (sessionStorage.getItem('enteredSite')) {
+            monitorOverlay.classList.add('fade-out');
+            mainContent.classList.remove('hidden');
+        }
+        
+        powerButton.addEventListener('click', function() {
+            // Play power on sound
+            const powerSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            powerSound.volume = 0.3;
+            powerSound.play();
+            
+            // Add zoom effect
+            monitorOverlay.classList.add('fade-out');
+            
+            // Show main content after animation
+            setTimeout(function() {
+                mainContent.classList.remove('hidden');
+                // Remember that user has entered the site
+                sessionStorage.setItem('enteredSite', 'true');
+            }, 1000);
+        });
+    }
 });
 
 // Function to set up intersection observers for sections with videos
@@ -852,27 +882,23 @@ function initParallaxEffect() {
 
 // Initialize gallery with animations
 function initGallery() {
-    console.log('Gallery initialization skipped - using direct HTML images');
-    
-    // Initialize parallax effect
-    initParallaxEffect();
-    
-    // Add intersection observer for gallery items
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    
-    if (galleryItems.length > 0 && 'IntersectionObserver' in window) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        galleryItems.forEach(item => {
-            observer.observe(item);
+    const galleryGrid = document.querySelector('.gallery-grid');
+    if (galleryGrid) {
+        galleryGrid.innerHTML = '';
+        galleryImages.forEach((image) => {
+            const img = document.createElement('img');
+            img.src = image.url;
+            img.alt = image.alt;
+            img.style.opacity = '0';
+            img.onload = function() {
+                img.style.opacity = '1';
+            };
+            img.onerror = function() {
+                console.error('Failed to load image:', image.url);
+                img.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
+                img.style.opacity = '1';
+            };
+            galleryGrid.appendChild(img);
         });
     }
 }
