@@ -1528,8 +1528,13 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 /* Contact Form Enhancements */
 .contact-grid input,
 .contact-grid textarea {
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     border: 1px solid #444;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    cursor: text;
+    position: relative;
+    z-index: 1;
 }
 
 .contact-grid input:focus,
@@ -1537,6 +1542,32 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
     outline: none;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Input Animation */
+@keyframes inputFocus {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.contact-grid input:focus,
+.contact-grid textarea:focus,
+.tab-content input:focus {
+    animation: inputFocus 0.3s ease;
+}
+
+/* Button Animation */
+@keyframes buttonPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.contact-grid .btn:hover,
+.tab-content .btn:hover {
+    animation: buttonPulse 0.5s ease infinite;
 }
 
 /* Modal Styles */
@@ -1577,6 +1608,16 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease;
+}
+
 .close-modal {
     position: absolute;
     top: 15px;
@@ -1585,11 +1626,12 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     font-weight: bold;
     color: #777;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .close-modal:hover {
     color: var(--accent-color);
+    transform: rotate(90deg);
 }
 
 .modal-tabs {
@@ -1671,12 +1713,14 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     color: #fff;
     font-size: 14px;
     transition: all 0.3s ease;
+    cursor: text;
 }
 
 .tab-content input:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.2);
     outline: none;
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .remember-me {
@@ -1688,11 +1732,13 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 .remember-me input {
     margin: 0 10px 0 0;
     width: auto;
+    cursor: pointer;
 }
 
 .remember-me label {
     color: #aaa;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .forgot-password, .back-to-login {
@@ -1709,6 +1755,7 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 
 .forgot-password a:hover, .back-to-login a:hover {
     color: var(--accent-color);
+    text-decoration: underline;
 }
 
 .success-icon {
@@ -1716,6 +1763,13 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
     font-size: 60px;
     color: #2ecc71;
     margin-bottom: 20px;
+    animation: successPop 0.5s ease;
+}
+
+@keyframes successPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 #success-text {

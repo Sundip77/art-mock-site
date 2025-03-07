@@ -16,6 +16,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const forgotPasswordLink = document.getElementById('forgot-password-link');
     const backToLoginLink = document.getElementById('back-to-login-link');
     
+    // Fix input field focus issues
+    const allInputs = document.querySelectorAll('input, textarea');
+    allInputs.forEach(input => {
+        // Make sure inputs are clickable
+        input.addEventListener('click', function(e) {
+            this.focus();
+        });
+        
+        // Add focus animation
+        input.addEventListener('focus', function() {
+            this.style.borderColor = 'var(--accent-color)';
+        });
+        
+        // Remove focus animation
+        input.addEventListener('blur', function() {
+            this.style.borderColor = '';
+        });
+    });
+    
     // Current form data storage
     let currentFormData = null;
     let currentFormType = null;
@@ -96,6 +115,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    // Add animation to buttons
+    const allButtons = document.querySelectorAll('.btn');
+    allButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+    });
+    
     // Event Listeners
     if (contactSubmitBtn) {
         contactSubmitBtn.addEventListener('click', handleContactSubmit);
@@ -163,7 +194,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageInput = document.getElementById('contact-message');
         
         if (!nameInput.value || !emailInput.value || !messageInput.value) {
-            alert('Please fill in all fields');
+            // Shake the form to indicate error
+            contactForm.classList.add('shake');
+            setTimeout(() => {
+                contactForm.classList.remove('shake');
+            }, 500);
+            
+            // Highlight empty fields
+            if (!nameInput.value) nameInput.style.borderColor = 'red';
+            if (!emailInput.value) emailInput.style.borderColor = 'red';
+            if (!messageInput.value) messageInput.style.borderColor = 'red';
+            
             return;
         }
         
@@ -184,7 +225,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const emailInput = document.getElementById('newsletter-email');
         
         if (!emailInput.value) {
-            alert('Please enter your email address');
+            // Shake the form to indicate error
+            newsletterForm.classList.add('shake');
+            setTimeout(() => {
+                newsletterForm.classList.remove('shake');
+            }, 500);
+            
+            // Highlight empty field
+            emailInput.style.borderColor = 'red';
+            
             return;
         }
         
@@ -203,6 +252,12 @@ document.addEventListener('DOMContentLoaded', function() {
         authModal.style.display = 'block';
         document.body.style.overflow = 'hidden'; // Prevent scrolling
         switchTab('login'); // Default to login tab
+        
+        // Focus the first input field
+        setTimeout(() => {
+            const firstInput = document.querySelector('#login-tab input');
+            if (firstInput) firstInput.focus();
+        }, 300);
     }
     
     function closeAuthModal() {
@@ -211,18 +266,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function switchTab(tabId) {
-        // Hide all tabs
+        // Hide all tabs with fade out effect
         tabContents.forEach(content => {
-            content.classList.remove('active');
+            content.style.opacity = '0';
+            setTimeout(() => {
+                content.classList.remove('active');
+                
+                // Show selected tab with fade in effect
+                if (content.id === `${tabId}-tab`) {
+                    content.classList.add('active');
+                    setTimeout(() => {
+                        content.style.opacity = '1';
+                        
+                        // Focus the first input in the tab
+                        const firstInput = content.querySelector('input');
+                        if (firstInput) firstInput.focus();
+                    }, 50);
+                }
+            }, 200);
         });
         
         // Remove active class from all buttons
         tabBtns.forEach(btn => {
             btn.classList.remove('active');
         });
-        
-        // Show selected tab
-        document.getElementById(`${tabId}-tab`).classList.add('active');
         
         // Add active class to clicked button
         if (tabId === 'login' || tabId === 'signup') {
@@ -236,7 +303,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = loginForm.querySelector('input[type="password"]').value;
         
         if (!email || !password) {
-            alert('Please fill in all fields');
+            // Shake the form to indicate error
+            loginForm.classList.add('shake');
+            setTimeout(() => {
+                loginForm.classList.remove('shake');
+            }, 500);
+            
+            // Highlight empty fields
+            if (!email) loginForm.querySelector('input[type="email"]').style.borderColor = 'red';
+            if (!password) loginForm.querySelector('input[type="password"]').style.borderColor = 'red';
+            
             return;
         }
         
@@ -244,6 +320,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const user = userDatabase.findUserByEmail(email);
         
         if (!user || user.password !== password) {
+            // Shake the form to indicate error
+            loginForm.classList.add('shake');
+            setTimeout(() => {
+                loginForm.classList.remove('shake');
+            }, 500);
+            
             alert('Invalid email or password');
             return;
         }
@@ -260,17 +342,44 @@ document.addEventListener('DOMContentLoaded', function() {
         const confirmPassword = signupForm.querySelectorAll('input[type="password"]')[1].value;
         
         if (!name || !email || !password || !confirmPassword) {
-            alert('Please fill in all fields');
+            // Shake the form to indicate error
+            signupForm.classList.add('shake');
+            setTimeout(() => {
+                signupForm.classList.remove('shake');
+            }, 500);
+            
+            // Highlight empty fields
+            if (!name) signupForm.querySelector('input[type="text"]').style.borderColor = 'red';
+            if (!email) signupForm.querySelector('input[type="email"]').style.borderColor = 'red';
+            if (!password) signupForm.querySelectorAll('input[type="password"]')[0].style.borderColor = 'red';
+            if (!confirmPassword) signupForm.querySelectorAll('input[type="password"]')[1].style.borderColor = 'red';
+            
             return;
         }
         
         if (password !== confirmPassword) {
+            // Shake the form to indicate error
+            signupForm.classList.add('shake');
+            setTimeout(() => {
+                signupForm.classList.remove('shake');
+            }, 500);
+            
+            // Highlight password fields
+            signupForm.querySelectorAll('input[type="password"]')[0].style.borderColor = 'red';
+            signupForm.querySelectorAll('input[type="password"]')[1].style.borderColor = 'red';
+            
             alert('Passwords do not match');
             return;
         }
         
         // Check if user already exists
         if (userDatabase.findUserByEmail(email)) {
+            // Shake the form to indicate error
+            signupForm.classList.add('shake');
+            setTimeout(() => {
+                signupForm.classList.remove('shake');
+            }, 500);
+            
             alert('Email already registered. Please login instead.');
             switchTab('login');
             return;
@@ -288,7 +397,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = resetForm.querySelector('input[type="email"]').value;
         
         if (!email) {
-            alert('Please enter your email address');
+            // Shake the form to indicate error
+            resetForm.classList.add('shake');
+            setTimeout(() => {
+                resetForm.classList.remove('shake');
+            }, 500);
+            
+            // Highlight empty field
+            resetForm.querySelector('input[type="email"]').style.borderColor = 'red';
+            
             return;
         }
         
@@ -296,6 +413,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const user = userDatabase.findUserByEmail(email);
         
         if (!user) {
+            // Shake the form to indicate error
+            resetForm.classList.add('shake');
+            setTimeout(() => {
+                resetForm.classList.remove('shake');
+            }, 500);
+            
             alert('No account found with this email address');
             return;
         }
