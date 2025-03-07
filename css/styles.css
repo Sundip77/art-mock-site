@@ -1,0 +1,80 @@
+/* Gallery Section Styles */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
+    margin-top: 30px;
+}
+
+.wide-image-container {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.wide-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease-out;
+}
+
+.gallery-item {
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    height: 250px;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+/* Gallery grid layout for desktop */
+@media (min-width: 768px) {
+    .gallery-grid {
+        grid-template-rows: auto auto;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-areas:
+            "wide wide wide"
+            "img1 img2 img3";
+    }
+    
+    .wide-image-container {
+        grid-area: wide;
+        height: 500px;
+    }
+    
+    .gallery-item:nth-child(2) {
+        grid-area: img1;
+    }
+    
+    .gallery-item:nth-child(3) {
+        grid-area: img2;
+    }
+    
+    .gallery-item:nth-child(4) {
+        grid-area: img3;
+    }
+}
+
+/* Animation for gallery items */
+.fade-in-animation {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

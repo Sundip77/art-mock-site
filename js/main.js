@@ -372,34 +372,53 @@ if (albumsGrid) {
 
     initHeroAnimations();
 
-    // Monitor Power Button Effect
-    const powerButton = document.getElementById('power-button');
+    // Monitor effect functionality
     const monitorOverlay = document.getElementById('monitor-overlay');
+    const powerButton = document.getElementById('power-button');
     const mainContent = document.getElementById('main-content');
+    const showMonitorButton = document.getElementById('show-monitor-button');
     
-    if (powerButton && monitorOverlay && mainContent) {
-        // Check if user has already entered the site
-        if (sessionStorage.getItem('enteredSite')) {
-            monitorOverlay.classList.add('fade-out');
-            mainContent.classList.remove('hidden');
-        }
+    // Function to show the monitor overlay
+    function showMonitor() {
+        monitorOverlay.classList.add('active');
+        mainContent.classList.add('hidden');
+    }
+    
+    // Function to hide the monitor with animation
+    function hideMonitor() {
+        // Play power on sound
+        const powerSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568.wav');
+        powerSound.volume = 0.5;
+        powerSound.play();
         
-        powerButton.addEventListener('click', function() {
-            // Play power on sound
-            const powerSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-            powerSound.volume = 0.3;
-            powerSound.play();
-            
-            // Add zoom effect
-            monitorOverlay.classList.add('fade-out');
-            
-            // Show main content after animation
-            setTimeout(function() {
-                mainContent.classList.remove('hidden');
-                // Remember that user has entered the site
-                sessionStorage.setItem('enteredSite', 'true');
-            }, 1000);
-        });
+        // Add the fade-out class to trigger the zoom animation
+        monitorOverlay.classList.add('fade-out');
+        
+        // After animation completes, show the main content
+        setTimeout(() => {
+            mainContent.classList.remove('hidden');
+            // Store in session that user has entered the site
+            sessionStorage.setItem('hasEnteredSite', 'true');
+        }, 1500);
+    }
+    
+    // Check if user has already entered the site in this session
+    if (!sessionStorage.getItem('hasEnteredSite')) {
+        // Show the monitor overlay when page loads
+        showMonitor();
+    } else {
+        // If user has already entered, show the main content directly
+        mainContent.classList.remove('hidden');
+    }
+    
+    // Add click event to power button
+    if (powerButton) {
+        powerButton.addEventListener('click', hideMonitor);
+    }
+    
+    // Add click event to show monitor button
+    if (showMonitorButton) {
+        showMonitorButton.addEventListener('click', showMonitor);
     }
 });
 
@@ -838,69 +857,77 @@ function initParallaxEffect() {
     const parallaxContainer = document.getElementById('parallax-container');
     const parallaxImage = document.getElementById('parallax-image');
     
-    if (!parallaxContainer || !parallaxImage) return;
+    if (!parallaxContainer || !parallaxImage) {
+        console.warn('Parallax elements not found');
+        return;
+    }
     
-    // Initial position
-    let initialOffset = 0;
-    let containerTop = 0;
-    let containerHeight = 0;
-    let windowHeight = 0;
+    let isInViewport = false;
     
-    // Function to calculate positions
     function calculatePositions() {
-        const rect = parallaxContainer.getBoundingClientRect();
-        containerTop = rect.top;
-        containerHeight = rect.height;
-        windowHeight = window.innerHeight;
+        if (!isInViewport) return;
         
-        // Only update if the container is in view
-        if (containerTop < windowHeight && containerTop + containerHeight > 0) {
-            // Calculate how far the container is through the viewport
-            const percentageThrough = (windowHeight - containerTop) / (windowHeight + containerHeight);
+        const scrollPosition = window.scrollY;
+        const containerTop = parallaxContainer.getBoundingClientRect().top + scrollPosition;
+        const containerHeight = parallaxContainer.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        // Check if the container is in the viewport
+        if (scrollPosition + windowHeight > containerTop && 
+            scrollPosition < containerTop + containerHeight) {
             
-            // Calculate the offset for the image (50% of its height for more dramatic effect)
-            const maxOffset = parallaxImage.offsetHeight - containerHeight;
-            const newOffset = maxOffset * percentageThrough;
+            // Calculate how far the container is from the top of the viewport
+            const distanceFromTop = (scrollPosition + windowHeight) - containerTop;
+            const percentage = distanceFromTop / (containerHeight + windowHeight);
             
-            // Apply the transform with a smooth transition
-            // Use a more dramatic effect by multiplying the offset
-            parallaxImage.style.transform = `translateY(-${newOffset * 1.5}px)`;
+            // Apply the parallax effect
+            const translateY = Math.min(percentage * 50, 50); // Max 50px movement
+            parallaxImage.style.transform = `translateY(-${translateY}px)`;
         }
     }
     
-    // Calculate on scroll
+    // Check if element is in viewport
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            isInViewport = entry.isIntersecting;
+            if (isInViewport) {
+                calculatePositions();
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    observer.observe(parallaxContainer);
+    
+    // Add scroll event listener
     window.addEventListener('scroll', calculatePositions);
-    
-    // Calculate on resize
     window.addEventListener('resize', calculatePositions);
-    
-    // Initial calculation
-    calculatePositions();
-    
-    console.log('Enhanced parallax effect initialized for gallery');
 }
 
 // Initialize gallery with animations
 function initGallery() {
-    const galleryGrid = document.querySelector('.gallery-grid');
-    if (galleryGrid) {
-        galleryGrid.innerHTML = '';
-        galleryImages.forEach((image) => {
-            const img = document.createElement('img');
-            img.src = image.url;
-            img.alt = image.alt;
-            img.style.opacity = '0';
-            img.onload = function() {
-                img.style.opacity = '1';
-            };
-            img.onerror = function() {
-                console.error('Failed to load image:', image.url);
-                img.src = 'https://via.placeholder.com/300x300?text=Image+Not+Found';
-                img.style.opacity = '1';
-            };
-            galleryGrid.appendChild(img);
+    // Get gallery elements
+    const galleryItems = document.querySelectorAll('.gallery-item img');
+    const wideImage = document.querySelector('.wide-image-container img');
+    
+    // Add animation classes to gallery items
+    galleryItems.forEach((item, index) => {
+        item.classList.add('fade-in-animation');
+        item.style.animationDelay = `${index * 0.2}s`;
+        
+        // Add hover effect
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
         });
-    }
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+        });
+    });
+    
+    // Initialize parallax effect for the wide image
+    initParallaxEffect();
 }
 
 // Initialize tour cards with animation delays
@@ -913,34 +940,19 @@ function initTourCards() {
 
 // Setup intersection observers for animations
 function setupAnimationObservers() {
-    const animatedSections = document.querySelectorAll('#gallery, #tours');
+    const sections = document.querySelectorAll('.section');
     
     if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    if (entry.target.id === 'gallery') {
-                        const images = entry.target.querySelectorAll('img');
-                        images.forEach((img, index) => {
-                            setTimeout(() => {
-                                img.style.opacity = '1';
-                                img.style.transform = 'translateY(0)';
-                            }, index * 100);
-                        });
-                    } else if (entry.target.id === 'tours') {
-                        const cards = entry.target.querySelectorAll('.tour-card');
-                        cards.forEach((card, index) => {
-                            setTimeout(() => {
-                                card.style.opacity = '1';
-                            }, index * 100);
-                        });
-                    }
+                    entry.target.classList.add('in-view');
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.2 });
         
-        animatedSections.forEach(section => {
+        sections.forEach(section => {
             observer.observe(section);
         });
     }
