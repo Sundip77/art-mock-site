@@ -274,152 +274,19 @@ function initHeroAnimations() {
     });
 }
 
-// Initialize animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize mobile menu
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const navLinks = document.querySelector('.nav-links');
-
-    if (mobileMenu && navLinks) {
-        mobileMenu.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-        });
-    }
-
-    // Initialize global mute button
-    const globalMuteBtn = document.getElementById('global-mute-toggle');
-    if (globalMuteBtn) {
-        globalMuteBtn.addEventListener('click', toggleGlobalMute);
-        console.log('Global mute button initialized');
-    }
-
-    // Initialize smooth scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-
-    // Initialize image loading
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        // Add error handling
-        img.onerror = function() {
-            console.error('Error loading image:', img.src);
-        };
-        
-        // Add load handling
-        img.onload = function() {
-            img.style.opacity = '1';
-        };
-    });
-
-    // Simple YouTube video handling
-    youtubeIframe = document.querySelector('#youtube-player iframe');
-    if (youtubeIframe) {
-        console.log('YouTube iframe found');
-    }
-
-    // Initialize album carousel
+    // Initialize features
     initAlbumCarousel();
-
-    // Set up intersection observers for video sections
-    setupSectionObservers();
-
-    // Initialize albums (original code - will be replaced by carousel)
-const albumsGrid = document.querySelector('.albums-grid');
-if (albumsGrid) {
-        // This section is now handled by the carousel
-        // The original code is kept for reference but won't execute
-    }
-
-    // Force initial video load if music section is visible
-    const musicSection = document.getElementById('music');
-    if (musicSection && isElementInViewport(musicSection)) {
-        // Initial load
-        updateBackgroundVideo(currentAlbumIndex, true);
-        
-        // Check again after a delay to ensure it's playing
-        setTimeout(() => {
-            console.log('Forcing initial video load for Utopia');
-            const iframe = document.querySelector('#album-bg-video iframe');
-            if (iframe) {
-                // Ensure autoplay is enabled
-                if (iframe.src.includes('autoplay=0')) {
-                    iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1');
-                } else if (!iframe.src.includes('autoplay=1')) {
-                    iframe.src = iframe.src + '&autoplay=1';
-                }
-            } else {
-                // If iframe doesn't exist yet, create it
-                updateBackgroundVideo(currentAlbumIndex, true);
-            }
-        }, 1500);
-    }
-
-    // Initialize gallery
     initGallery();
-    
-    // Initialize tour cards
-    initTourCards();
-    
-    // Setup intersection observers for animations
-    setupAnimationObservers();
-
+    initMobileMenu();
     initHeroAnimations();
-
-    // Monitor effect functionality
-    const monitorOverlay = document.getElementById('monitor-overlay');
-    const powerButton = document.getElementById('power-button');
-    const mainContent = document.getElementById('main-content');
-    const showMonitorButton = document.getElementById('show-monitor-button');
+    
+    // Global mute functionality
+    const globalMuteToggle = document.getElementById('global-mute-toggle');
     const chatbotToggle = document.getElementById('chatbot-toggle');
     
-    // Function to show the monitor overlay
-    function showMonitor() {
-        monitorOverlay.classList.add('active');
-        mainContent.classList.add('hidden');
-    }
-    
-    // Function to hide the monitor with animation
-    function hideMonitor() {
-        // Play power on sound
-        const powerSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568.wav');
-        powerSound.volume = 0.5;
-        powerSound.play();
-        
-        // Add the fade-out class to trigger the zoom animation
-        monitorOverlay.classList.add('fade-out');
-        
-        // After animation completes, show the main content
-        setTimeout(() => {
-            mainContent.classList.remove('hidden');
-            // Store in session that user has entered the site
-            sessionStorage.setItem('hasEnteredSite', 'true');
-        }, 1500);
-    }
-    
-    // Check if user has already entered the site in this session
-    if (!sessionStorage.getItem('hasEnteredSite')) {
-        // Show the monitor overlay when page loads
-        showMonitor();
-    } else {
-        // If user has already entered, show the main content directly
-        mainContent.classList.remove('hidden');
-    }
-    
-    // Add click event to power button
-    if (powerButton) {
-        powerButton.addEventListener('click', hideMonitor);
-    }
-    
-    // Add click event to show monitor button
-    if (showMonitorButton) {
-        showMonitorButton.addEventListener('click', showMonitor);
+    if (globalMuteToggle) {
+        globalMuteToggle.addEventListener('click', toggleGlobalMute);
     }
     
     // Add click event to chatbot toggle button
@@ -431,12 +298,8 @@ if (albumsGrid) {
         });
     }
     
-    // Initialize other features
-    initAlbumCarousel();
-    initGallery();
-    initMobileMenu();
-    
-    // Rest of your existing code...
+    // Setup observers for animations
+    setupSectionObservers();
 });
 
 // Function to set up intersection observers for sections with videos

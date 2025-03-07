@@ -8,7 +8,6 @@
     <title>Travis Scott | Official Fan Website</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/chatbot.css">
-    <link rel="stylesheet" href="css/monitor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,27 +69,7 @@
     </script>
 </head>
 <body>
-    <!-- Monitor Screen Overlay -->
-    <div id="monitor-overlay" class="active">
-        <div class="monitor-container">
-            <div class="monitor">
-                <div class="monitor-screen">
-                    <div class="monitor-content">
-                        <img src="https://i.imgur.com/JWxMjmZ.png" alt="Cactus Jack Logo" class="cactus-jack-logo">
-                        <h1>TRAVIS SCOTT</h1>
-                        <p>Click the power button to enter</p>
-                    </div>
-                </div>
-                <div class="monitor-stand"></div>
-                <div class="monitor-base"></div>
-                <button id="power-button" class="power-button">
-                    <i class="fas fa-power-off"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="main-content" class="hidden">
+    <div id="main-content">
         <header class="main-header">
             <nav class="nav-container">
                 <div class="logo">
@@ -485,9 +464,6 @@
     
     <!-- Floating controls that follow scroll -->
     <div class="floating-control">
-        <button id="show-monitor-button" aria-label="Show monitor screen">
-            <i class="fas fa-desktop"></i>
-        </button>
         <button id="chatbot-toggle" aria-label="Open Travis Scott chatbot">
             <i class="fas fa-comment"></i>
         </button>
