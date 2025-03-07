@@ -1,7 +1,10 @@
 // Travis Scott Chatbot
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing Travis Scott Chatbot');
+    
     // Create chatbot elements if they don't exist
     if (!document.getElementById('travis-chatbot')) {
+        console.log('Creating chatbot elements');
         createChatbotElements();
     }
     
@@ -14,18 +17,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Listen for custom toggle event
     document.addEventListener('toggleChatbot', function() {
+        console.log('Toggle chatbot event received');
         toggleChatbot();
     });
     
     // Toggle chatbot visibility
     function toggleChatbot() {
+        console.log('Toggling chatbot visibility');
         if (chatbotContainer.classList.contains('active')) {
             chatbotContainer.classList.remove('active');
+            console.log('Chatbot hidden');
         } else {
             chatbotContainer.classList.add('active');
+            console.log('Chatbot shown');
             // Focus on input when opened
             setTimeout(() => {
-                chatbotInput.focus();
+                if (chatbotInput) {
+                    chatbotInput.focus();
+                    console.log('Input focused');
+                }
             }, 300);
         }
     }
@@ -33,23 +43,35 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close chatbot when close button is clicked
     if (chatbotCloseBtn) {
         chatbotCloseBtn.addEventListener('click', function() {
+            console.log('Close button clicked');
             chatbotContainer.classList.remove('active');
         });
+    } else {
+        console.error('Chatbot close button not found');
     }
     
     // Send message when send button is clicked or Enter is pressed
     if (chatbotSend && chatbotInput) {
-        chatbotSend.addEventListener('click', sendMessage);
+        chatbotSend.addEventListener('click', function() {
+            console.log('Send button clicked');
+            sendMessage();
+        });
+        
         chatbotInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
+                console.log('Enter key pressed in input');
                 sendMessage();
             }
         });
+    } else {
+        console.error('Chatbot send button or input not found');
     }
     
     // Function to send message
     function sendMessage() {
         const message = chatbotInput.value.trim();
+        console.log('Sending message:', message);
+        
         if (message) {
             // Add user message
             addMessage('user', message);
@@ -60,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get bot response after a short delay
             setTimeout(() => {
                 const response = getBotResponse(message);
+                console.log('Bot response:', response);
                 addMessage('bot', response);
                 
                 // Scroll to bottom
@@ -70,6 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to add message to chat
     function addMessage(sender, message) {
+        console.log('Adding message from', sender);
+        
         const messageElement = document.createElement('div');
         messageElement.classList.add('chatbot-message', `${sender}-message`);
         
@@ -146,5 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         document.body.insertAdjacentHTML('beforeend', chatbotHTML);
+        console.log('Chatbot elements created and added to the DOM');
     }
 }); 
