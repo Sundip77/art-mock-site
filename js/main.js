@@ -279,62 +279,76 @@ document.addEventListener('DOMContentLoaded', function() {
     initMobileMenu();
     initHeroAnimations();
     
-    // Set up mute button
+    // Set up mute button with direct DOM manipulation
     const muteButton = document.getElementById('global-mute-toggle');
     if (muteButton) {
-        console.log('Mute button found, adding event listener');
         muteButton.addEventListener('click', function() {
+            // Toggle mute state
             isMuted = !isMuted;
+            
+            // Update button icon
             const icon = muteButton.querySelector('i');
             if (icon) {
                 icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
             }
             
-            // Apply mute state to all audio/video elements
-            const allAudio = document.querySelectorAll('audio');
-            allAudio.forEach(audio => { audio.muted = isMuted; });
+            // Directly mute/unmute all audio elements
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.muted = isMuted;
+            });
             
-            const allVideo = document.querySelectorAll('video');
-            allVideo.forEach(video => { video.muted = isMuted; });
+            // Directly mute/unmute all video elements
+            document.querySelectorAll('video').forEach(video => {
+                video.muted = isMuted;
+            });
             
             // Handle YouTube iframes
-            const youtubeIframes = document.querySelectorAll('iframe[src*="youtube.com"]');
-            youtubeIframes.forEach(iframe => {
-                let src = iframe.src;
-                // Remove existing mute parameter
-                src = src.replace(/(&|\?)mute=\d/g, '');
-                // Add new mute parameter
-                src += (src.includes('?') ? '&' : '?') + 'mute=' + (isMuted ? '1' : '0');
-                iframe.src = src;
+            document.querySelectorAll('iframe[src*="youtube.com"]').forEach(iframe => {
+                // Create new src with updated mute parameter
+                let newSrc = iframe.src;
+                
+                // Remove existing mute parameter if present
+                newSrc = newSrc.replace(/(&|\?)mute=\d/g, '');
+                
+                // Add appropriate mute parameter
+                if (newSrc.includes('?')) {
+                    newSrc += '&mute=' + (isMuted ? '1' : '0');
+                } else {
+                    newSrc += '?mute=' + (isMuted ? '1' : '0');
+                }
+                
+                // Only update if changed to avoid reload loops
+                if (newSrc !== iframe.src) {
+                    iframe.src = newSrc;
+                }
             });
             
             // Handle Spotify iframes
-            const spotifyIframes = document.querySelectorAll('iframe[src*="spotify.com"]');
-            if (isMuted) {
-                spotifyIframes.forEach(iframe => {
+            document.querySelectorAll('iframe[src*="spotify.com"]').forEach(iframe => {
+                if (isMuted) {
+                    // Store current src to restore later
                     iframe.dataset.originalSrc = iframe.src;
                     iframe.src = 'about:blank';
-                });
-            } else {
-                spotifyIframes.forEach(iframe => {
-                    if (iframe.dataset.originalSrc) {
-                        iframe.src = iframe.dataset.originalSrc;
-                    }
-                });
-            }
+                } else if (iframe.dataset.originalSrc) {
+                    // Restore original src if available
+                    iframe.src = iframe.dataset.originalSrc;
+                }
+            });
+            
+            console.log('Global mute state:', isMuted ? 'Muted' : 'Unmuted');
         });
     }
     
-    // Set up chatbot toggle
+    // Set up chatbot toggle with direct DOM manipulation
     const chatbotToggle = document.getElementById('chatbot-toggle');
     if (chatbotToggle) {
-        console.log('Chatbot button found, adding event listener');
         chatbotToggle.addEventListener('click', function() {
             const chatbotContainer = document.getElementById('travis-chatbot');
             if (chatbotContainer) {
+                // Toggle active class
                 chatbotContainer.classList.toggle('active');
                 
-                // Focus on input when opened
+                // Focus input when opened
                 if (chatbotContainer.classList.contains('active')) {
                     setTimeout(() => {
                         const input = document.getElementById('chatbot-input');
