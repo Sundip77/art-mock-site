@@ -62,5 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const muteButton = document.getElementById('global-mute-toggle');
     if (muteButton) {
         muteButton.addEventListener('click', toggleGlobalMute);
+        console.log('Mute button initialized');
+    } else {
+        console.error('Mute button not found in the DOM');
     }
 }); 

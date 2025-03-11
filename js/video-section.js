@@ -67,6 +67,8 @@ function isElementInViewport(el) {
 
 // Initialize video control
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing video section controls');
+    
     // Initial check
     pauseInactiveVideos();
     
@@ -74,4 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', function() {
         pauseInactiveVideos();
     });
+    
+    // Also check periodically (some browsers don't trigger scroll events reliably)
+    setInterval(pauseInactiveVideos, 2000);
 }); 
