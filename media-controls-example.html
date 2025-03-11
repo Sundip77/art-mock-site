@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Controls Example</title>
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Include our media controls CSS -->
+    <link rel="stylesheet" href="css/media-controls.css">
+</head>
+<body>
+    <!-- Example video section -->
+    <section id="tours" class="section">
+        <div class="video-background">
+            <div id="youtube-player">
+                <!-- YouTube embed with autoplay disabled by default -->
+                <iframe 
+                    id="travis-video"
+                    width="100%" 
+                    height="100%" 
+                    src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=0&mute=0&loop=1&playlist=YOUR_VIDEO_ID&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1" 
+                    title="Video Background" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+        <div class="container">
+            <!-- Your content here -->
+        </div>
+    </section>
+
+    <!-- Floating mute button -->
+    <div class="floating-control">
+        <button id="global-mute-toggle" aria-label="Mute or unmute all audio">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+
+    <!-- Include our JavaScript files -->
+    <script src="js/mute-button.js"></script>
+    <script src="js/video-section.js"></script>
+</body>
+</html> 

@@ -1,0 +1,81 @@
+/* Media Controls CSS */
+
+/* Floating mute button that follows scroll */
+.floating-control {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+#global-mute-toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255, 215, 0, 0.8);
+    color: #1a1a1a;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+#global-mute-toggle:hover {
+    background-color: rgba(255, 215, 0, 1);
+    transform: scale(1.1);
+}
+
+#global-mute-toggle i {
+    font-size: 20px;
+}
+
+/* Video background styles */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+}
+
+#youtube-player {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+#youtube-player iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .floating-control {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    #global-mute-toggle {
+        width: 40px;
+        height: 40px;
+    }
+    
+    #global-mute-toggle i {
+        font-size: 16px;
+    }
+} 
