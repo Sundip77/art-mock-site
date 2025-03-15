@@ -1853,4 +1853,25 @@ h1, h2, h3, .logo h1, .hero-content h1, .album-title {
 /* User Content */
 .user-content {
     display: none;
+}
+
+/* Hero Section Social Links */
+.hero-content .social-links {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.hero-content .social-links a {
+    color: #fff;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-content .social-links a:hover {
+    color: var(--accent-color);
+    transform: translateY(-5px);
 } 

@@ -308,34 +308,50 @@ function initAlbumCarousel() {
         {
             title: "Utopia",
             year: "2023",
-            image: "https://upload.wikimedia.org/wikipedia/en/4/40/Travis_Scott_-_Utopia.png",
+            image: "https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Utopia-CD-1500.png?v=1698377013&width=1100",
             spotifyLink: "spotify:album:18NOKLkZETa4sWwLMIm0UZ",
-            spotifyWebLink: "https://open.spotify.com/album/18NOKLkZETa4sWwLMIm0UZ",
-            videoId: "GtQ-ytkFL-reJhxw"
+            spotifyWebLink: "https://open.spotify.com/album/18NOKLkZETa4sWwLMIm0UZ?si=niCwOFO-Q_qz9eSuRs4rHQ",
+            videoId: "FRjQH1kLjEc"
         },
         {
             title: "Astroworld",
             year: "2018",
-            image: "https://upload.wikimedia.org/wikipedia/en/0/0b/Astroworld_by_Travis_Scott.jpg",
+            image: "https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Astroworld-CD-1500.png?v=1698376375&width=1100",
             spotifyLink: "spotify:album:41GuZcammIkupMPKH2OJ6I",
-            spotifyWebLink: "https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I",
-            videoId: "YqvCptqhHfs"
+            spotifyWebLink: "https://open.spotify.com/album/41GuZcammIkupMPKH2OJ6I?si=Wd9-Qs-eTLCZXbKQRYUYmA",
+            videoId: "6ONRf7h3Mdk"
         },
         {
             title: "Birds in the Trap Sing McKnight",
             year: "2016",
-            image: "https://upload.wikimedia.org/wikipedia/en/6/61/Travis_Scott_-_Birds_in_the_Trap_Sing_McKnight.png",
+            image: "https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Birds-CD-1500.png?v=1698376888&width=1445",
             spotifyLink: "spotify:album:42WVQWuf1teDysXiOupIZt",
-            spotifyWebLink: "https://open.spotify.com/album/42WVQWuf1teDysXiOupIZt",
-            videoId: "ttg-FiLHWHw"
+            spotifyWebLink: "https://open.spotify.com/album/42WVQWuf1teDysXiOupIZt?si=Wd9-Qs-eTLCZXbKQRYUYmA",
+            videoId: "Dst9gZkq1a8"
         },
         {
             title: "Rodeo",
             year: "2015",
-            image: "https://upload.wikimedia.org/wikipedia/en/2/2a/Rodeo_album_cover.jpg",
+            image: "https://travisscott.rosecityworks.com/cdn/shop/files/Travis-Scott-Rodeo-Deluxe-1500.png?v=1699920600&width=1445",
             spotifyLink: "spotify:album:4PWBTB6NYSKQwfo79I3prg",
-            spotifyWebLink: "https://open.spotify.com/album/4PWBTB6NYSKQwfo79I3prg",
-            videoId: "Kl5B6MBAntI"
+            spotifyWebLink: "https://open.spotify.com/album/4PWBTB6NYSKQwfo79I3prg?si=PCBEW6_FTGKUtt4W9s75Gg",
+            videoId: "KnZ8h3MRuYg"
+        },
+        {
+            title: "Owl Pharaoh",
+            year: "2013",
+            image: "https://media-hosting.imagekit.io//9d721a6cd4d84392/s-l1600-removebg-preview.png?Expires=1835725694&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=EjWG6cDHD0YwTCRiAl4PgGHTDu1zzGauE82T~BPHoZmv3eYT7bfx403E0CYLi3pBwtlkSbRKDWgFSR0Hm0ukf7XjP96kRjbVRbobUdnFyUqpLLgeixS~OIXEL7UpfRIwH138691QZi8wlbnRz52Kz0mN3UYrrCMfiMplOy8bCNHiPRO4axFuwOkmR1jTSR2K9CnrcuUF4VY3DEQzAblrx7eTZEjYSJsm~J34kMYZQtRu1EUexpXk51IBXM4aTGFeOspggwt3SEq-ZaTBLrPS3O3~~Kt-SzjZ1sOx-I0VX~lMd-IHuDSNFPFlf8zXUNFBXLD2bmD0mZoa7LwpyYRHhA__",
+            spotifyLink: "spotify:playlist:0FxFmzE4EI4xibIs9jaIVN",
+            spotifyWebLink: "https://open.spotify.com/playlist/0FxFmzE4EI4xibIs9jaIVN?si=b35be59cb25b4b95",
+            videoId: "X4MSlFq8bNI"
+        },
+        {
+            title: "Days Before Rodeo",
+            year: "2014",
+            image: "https://i.ibb.co/nsdKrpCM/travis-scott-vinyl-days-before-rodeo-fotor-bg-remover-2025030503355.png",
+            spotifyLink: "spotify:album:54Y471E7GNBSOXjZtqONId",
+            spotifyWebLink: "https://open.spotify.com/album/54Y471E7GNBSOXjZtqONId?si=e0WAR_GtQ-ytkFL-reJhxw",
+            videoId: "sS8ELauHmGM"
         }
     ];
     
@@ -410,10 +426,33 @@ function initAlbumCarousel() {
         
         // Update album link
         if (albumLink) {
+            // Remove any existing event listeners to prevent duplicates
+            var newAlbumLink = albumLink.cloneNode(true);
+            albumLink.parentNode.replaceChild(newAlbumLink, albumLink);
+            albumLink = newAlbumLink;
+            
+            // Set up the new link with proper attributes
             albumLink.href = albums[index].spotifyWebLink;
-            albumLink.setAttribute('data-spotify-uri', albums[index].spotifyLink);
-            albumLink.setAttribute('data-spotify-web', albums[index].spotifyWebLink);
-            albumLink.setAttribute('data-album-title', albums[index].title);
+            albumLink.setAttribute('target', '_blank');
+            albumLink.setAttribute('rel', 'noopener noreferrer');
+            albumLink.textContent = 'Stream Now';
+            
+            // Add data attributes for both URI and web link
+            albumLink.dataset.spotifyUri = albums[index].spotifyLink;
+            albumLink.dataset.spotifyWeb = albums[index].spotifyWebLink;
+            albumLink.dataset.albumTitle = albums[index].title;
+            
+            // Add a direct click handler that forces the link to open
+            albumLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                var albumTitle = this.dataset.albumTitle;
+                var spotifyUri = this.dataset.spotifyUri;
+                var spotifyWeb = this.dataset.spotifyWeb;
+                
+                // Use the specialized function to open Spotify
+                openSpotifyLink(spotifyUri, spotifyWeb, albumTitle);
+            });
         }
         
         // Update background video
@@ -425,10 +464,23 @@ function initAlbumCarousel() {
         var albumBgVideoContainer = document.getElementById('album-bg-video');
         if (albumBgVideoContainer) {
             var videoId = albums[index].videoId;
+            
+            // Add start parameter for specific videos to start at the right timestamp
+            var startTime = '';
+            if (albums[index].title === 'Days Before Rodeo') {
+                startTime = '&start=22';
+            } else if (albums[index].title === 'Rodeo') {
+                startTime = '&start=24'; // Start Rodeo video at 24 seconds
+            } else if (albums[index].title === 'Owl Pharaoh') {
+                startTime = '&start=148'; // Updated timestamp for Owl Pharaoh
+            } else if (albums[index].title === 'Utopia') {
+                startTime = '&start=16'; // Start UTOPIA video at 16 seconds
+            }
+            
             var iframe = document.createElement('iframe');
             iframe.width = "100%";
             iframe.height = "100%";
-            iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&mute=" + (isMuted ? '1' : '0') + "&controls=0&showinfo=0&rel=0&loop=1&playlist=" + videoId;
+            iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&mute=" + (isMuted ? '1' : '0') + "&controls=0&showinfo=0&rel=0&loop=1&playlist=" + videoId + startTime;
             iframe.title = albums[index].title + " Background";
             iframe.frameBorder = "0";
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
@@ -437,6 +489,8 @@ function initAlbumCarousel() {
             // Clear container and append iframe
             albumBgVideoContainer.innerHTML = '';
             albumBgVideoContainer.appendChild(iframe);
+            
+            console.log("Updated background video for " + albums[index].title);
         }
     }
     
@@ -488,6 +542,58 @@ function initMuteButton() {
     } else {
         console.error("Mute button not found");
     }
+}
+
+// Function to open Spotify links effectively
+function openSpotifyLink(uri, webLink, albumTitle) {
+    console.log('Opening Spotify for ' + albumTitle + ': ' + webLink);
+    
+    // For Owl Pharaoh, which is a playlist, handle it differently
+    if (webLink.includes('playlist')) {
+        console.log('Opening as playlist: ' + webLink);
+        // Open directly in a new tab for playlists
+        window.open(webLink, '_blank');
+        return;
+    }
+    
+    // First try to open the Spotify app with the URI
+    const spotifyAppAttempt = document.createElement('iframe');
+    spotifyAppAttempt.style.display = 'none';
+    spotifyAppAttempt.src = uri;
+    document.body.appendChild(spotifyAppAttempt);
+    
+    // After a short delay, also open the web link in a new tab
+    // This ensures at least one method works
+    setTimeout(() => {
+        // Clean up the iframe
+        try {
+            document.body.removeChild(spotifyAppAttempt);
+        } catch (e) {
+            // Ignore errors if already removed
+        }
+        
+        // Open web link in new tab
+        window.open(webLink, '_blank');
+    }, 300);
+    
+    // Also create a direct link as a fallback
+    const directLink = document.createElement('a');
+    directLink.href = webLink;
+    directLink.target = '_blank';
+    directLink.rel = 'noopener noreferrer';
+    directLink.style.display = 'none';
+    document.body.appendChild(directLink);
+    
+    // Click the link after a short delay
+    setTimeout(() => {
+        directLink.click();
+        // Clean up
+        try {
+            document.body.removeChild(directLink);
+        } catch (e) {
+            // Ignore errors if already removed
+        }
+    }, 600);
 }
 
 // Initialize everything when the DOM is loaded
