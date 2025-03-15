@@ -3,6 +3,7 @@
 
 // Global variables
 var isMuted = false;
+var toursVideoPlaying = false;
 
 // Wait for the page to fully load
 window.onload = function() {
@@ -119,34 +120,62 @@ function fixVideoControl() {
     // Track active section
     var activeSection = null;
     
+    // Function to calculate what percentage of an element is visible in the viewport
+    function getSectionVisibility(element) {
+        var rect = element.getBoundingClientRect();
+        var windowHeight = window.innerHeight;
+        
+        // If the element is not in the viewport at all
+        if (rect.bottom <= 0 || rect.top >= windowHeight) {
+            return 0;
+        }
+        
+        // Calculate the visible height of the element
+        var visibleTop = Math.max(0, rect.top);
+        var visibleBottom = Math.min(windowHeight, rect.bottom);
+        var visibleHeight = visibleBottom - visibleTop;
+        
+        // Calculate the percentage of the element that is visible
+        return visibleHeight / rect.height;
+    }
+    
     // Function to check which section is visible
     function checkVisibleSections() {
-        // Check if music section is visible
-        if (musicSection && isElementVisible(musicSection)) {
-            if (activeSection !== 'music') {
-                console.log("Music section is now visible");
-                activeSection = 'music';
-                playMusicSectionVideos();
-                pauseToursSectionVideos();
+        var sections = document.querySelectorAll('.section');
+        var activeSection = null;
+        var maxVisibility = 0;
+
+        sections.forEach(function(section) {
+            var visibility = getSectionVisibility(section);
+            
+            if (visibility > maxVisibility) {
+                maxVisibility = visibility;
+                activeSection = section;
             }
-        }
-        // Check if tours section is visible
-        else if (toursSection && isElementVisible(toursSection)) {
-            if (activeSection !== 'tours') {
-                console.log("Tours section is now visible");
-                activeSection = 'tours';
-                playToursSectionVideos();
-                pauseMusicSectionVideos();
+            
+            // Log visibility for debugging
+            console.log(section.id + " section visibility: " + Math.round(visibility * 100) + "%");
+        });
+
+        // Update active section
+        if (activeSection) {
+            console.log("Active section: " + activeSection.id + " with " + Math.round(maxVisibility * 100) + "% visibility");
+            
+            // Handle tours section videos
+            if (activeSection.id === 'tours') {
+                if (!toursVideoPlaying) {
+                    playToursSectionVideos();
+                    toursVideoPlaying = true;
+                }
+            } else {
+                if (toursVideoPlaying) {
+                    pauseToursSectionVideos();
+                    toursVideoPlaying = false;
+                }
             }
-        }
-        // No video sections visible
-        else {
-            if (activeSection) {
-                console.log("No video sections visible");
-                pauseMusicSectionVideos();
-                pauseToursSectionVideos();
-                activeSection = null;
-            }
+            
+            // Handle background videos
+            updateBackgroundVideo(activeSection.id);
         }
     }
     
@@ -155,11 +184,28 @@ function fixVideoControl() {
         var rect = el.getBoundingClientRect();
         var windowHeight = window.innerHeight || document.documentElement.clientHeight;
         
-        // Consider element visible if at least 50% of it is in the viewport
+        // Consider element visible only if at least 75% of it is in the viewport
+        // This is stricter than before to ensure videos pause when scrolling away
         var visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
         var elementHeight = rect.bottom - rect.top;
         
-        return visibleHeight > elementHeight * 0.5;
+        // Increase threshold from 0.5 (50%) to 0.75 (75%)
+        return visibleHeight > elementHeight * 0.75;
+    }
+    
+    // Add a more aggressive check for section visibility
+    function isSectionActive(section) {
+        if (!section) return false;
+        
+        var rect = section.getBoundingClientRect();
+        var windowHeight = window.innerHeight;
+        
+        // Section is considered active only when it takes up most of the screen
+        // This ensures videos pause when scrolling to other sections
+        var visibleRatio = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+        
+        // Section must take up at least 70% of the viewport to be considered active
+        return visibleRatio > windowHeight * 0.7;
     }
     
     // Play videos in music section
@@ -251,45 +297,63 @@ function fixVideoControl() {
         }
     }
     
-    // Play videos in tours section
-    function playToursSectionVideos() {
-        console.log("Playing tours section videos");
-        
-        // Play tour video
-        var tourVideo = document.querySelector('#youtube-player iframe');
-        if (tourVideo) {
-            var src = tourVideo.src;
-            
-            // Ensure autoplay is enabled
-            if (src.includes('autoplay=0')) {
-                src = src.replace('autoplay=0', 'autoplay=1');
-            } else if (!src.includes('autoplay=1')) {
-                src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
-            }
-            
-            // Update src
-            tourVideo.src = src;
-            console.log("Updated tour video src:", src);
-        }
-    }
-    
-    // Pause videos in tours section
+    // Pause videos in tours section - more aggressive approach
     function pauseToursSectionVideos() {
         console.log("Pausing tours section videos");
         
-        // Pause tour video
-        var tourVideo = document.querySelector('#youtube-player iframe');
-        if (tourVideo) {
-            var src = tourVideo.src;
+        // Get the YouTube player container
+        var youtubePlayerContainer = document.getElementById('youtube-player');
+        if (youtubePlayerContainer) {
+            // Store the current iframe src if it exists
+            var tourVideo = youtubePlayerContainer.querySelector('iframe');
+            if (tourVideo) {
+                // Save the current src to a data attribute on the container
+                youtubePlayerContainer.setAttribute('data-video-src', tourVideo.src);
+                
+                // Remove the iframe completely
+                youtubePlayerContainer.innerHTML = '';
+                console.log("Removed tour video iframe completely");
+            }
+        }
+    }
+    
+    // Play videos in tours section - restore from saved src
+    function playToursSectionVideos() {
+        console.log("Playing tours section videos");
+        
+        // Get the YouTube player container
+        var youtubePlayerContainer = document.getElementById('youtube-player');
+        if (youtubePlayerContainer) {
+            // Check if we have a saved video source
+            var savedVideoSrc = youtubePlayerContainer.getAttribute('data-video-src');
             
-            // Ensure autoplay is disabled
-            if (src.includes('autoplay=1')) {
-                src = src.replace('autoplay=1', 'autoplay=0');
+            // If no saved source, use the default
+            if (!savedVideoSrc) {
+                savedVideoSrc = "https://www.youtube.com/embed/68gLDQlVdQk?autoplay=1&mute=" + (isMuted ? '1' : '0') + "&loop=1&playlist=68gLDQlVdQk&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1";
+            } else {
+                // Make sure autoplay is enabled
+                if (savedVideoSrc.includes('autoplay=0')) {
+                    savedVideoSrc = savedVideoSrc.replace('autoplay=0', 'autoplay=1');
+                } else if (!savedVideoSrc.includes('autoplay=1')) {
+                    savedVideoSrc += (savedVideoSrc.includes('?') ? '&' : '?') + 'autoplay=1';
+                }
             }
             
-            // Update src
-            tourVideo.src = src;
-            console.log("Updated tour video src to pause:", src);
+            // Create a new iframe
+            var iframe = document.createElement('iframe');
+            iframe.id = "travis-video";
+            iframe.width = "100%";
+            iframe.height = "100%";
+            iframe.src = savedVideoSrc;
+            iframe.title = "Travis Scott Concert Background";
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+            iframe.allowFullscreen = true;
+            
+            // Add the iframe to the container
+            youtubePlayerContainer.innerHTML = '';
+            youtubePlayerContainer.appendChild(iframe);
+            console.log("Restored tour video iframe with src:", savedVideoSrc);
         }
     }
     
@@ -596,9 +660,67 @@ function openSpotifyLink(uri, webLink, albumTitle) {
     }, 600);
 }
 
-// Initialize everything when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM fully loaded, initializing components...");
+// Add a function to force scroll to the next section when near boundary
+function setupSectionScrolling() {
+    console.log("Setting up section scrolling");
+    
+    // Get all sections
+    var sections = [
+        document.getElementById('home'),
+        document.getElementById('music'),
+        document.getElementById('biography'),
+        document.getElementById('tours'),
+        document.getElementById('ventures'),
+        document.getElementById('gallery'),
+        document.getElementById('contact')
+    ];
+    
+    // Filter out null sections
+    sections = sections.filter(function(section) {
+        return section !== null;
+    });
+    
+    // Add scroll event listener
+    var isScrolling = false;
+    window.addEventListener('scroll', function() {
+        if (isScrolling) return;
+        
+        // Find the section that's most visible
+        var mostVisibleSection = null;
+        var maxVisibility = 0;
+        
+        sections.forEach(function(section) {
+            var rect = section.getBoundingClientRect();
+            var windowHeight = window.innerHeight;
+            
+            // Calculate how much of the section is visible
+            var visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+            var visibilityRatio = visibleHeight / windowHeight;
+            
+            if (visibilityRatio > maxVisibility) {
+                maxVisibility = visibilityRatio;
+                mostVisibleSection = section;
+            }
+        });
+        
+        // If we're near a boundary (section is less than 80% visible but more than 30%)
+        if (maxVisibility < 0.8 && maxVisibility > 0.3 && mostVisibleSection) {
+            isScrolling = true;
+            
+            // Scroll to the most visible section
+            mostVisibleSection.scrollIntoView({ behavior: 'smooth' });
+            
+            // Reset the flag after animation completes
+            setTimeout(function() {
+                isScrolling = false;
+            }, 1000);
+        }
+    });
+}
+
+// Initialize all components
+function initializeComponents() {
+    console.log("Initializing components...");
     
     // Initialize mute button
     initMuteButton();
@@ -615,5 +737,97 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize hero animations
     initHeroAnimations();
     
-    console.log("All components initialized");
+    // Initialize section scrolling
+    setupSectionScrolling();
+    
+    // Set up scroll event listener for section visibility
+    window.addEventListener('scroll', function() {
+        checkVisibleSections();
+    });
+    
+    // Initial check for visible sections
+    checkVisibleSections();
+    
+    console.log("All components initialized.");
+}
+
+// Initialize when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded");
+    initializeComponents();
 });
+
+// Update background video based on active section
+function updateBackgroundVideo(sectionId) {
+    console.log("Updating background video for section:", sectionId);
+    
+    var backgroundVideo = document.getElementById('background-video');
+    if (!backgroundVideo) {
+        console.log("Background video element not found");
+        return;
+    }
+    
+    var videoSource = backgroundVideo.querySelector('source');
+    if (!videoSource) {
+        console.log("Video source element not found");
+        return;
+    }
+    
+    var newSrc = '';
+    var startTime = 0;
+    
+    // Set video source based on section
+    switch(sectionId) {
+        case 'home':
+            newSrc = 'videos/travis-home.mp4';
+            startTime = 0;
+            break;
+        case 'music':
+            newSrc = 'videos/travis-music.mp4';
+            startTime = 5; // Start at 5 seconds for music section
+            break;
+        case 'tours':
+            // For tours section, we use the YouTube video instead
+            backgroundVideo.pause();
+            backgroundVideo.style.opacity = '0';
+            return;
+        case 'ventures':
+            newSrc = 'videos/travis-ventures.mp4';
+            startTime = 10; // Start at 10 seconds for ventures section
+            break;
+        case 'gallery':
+            newSrc = 'videos/travis-gallery.mp4';
+            startTime = 15; // Start at 15 seconds for gallery section
+            break;
+        case 'contact':
+            newSrc = 'videos/travis-contact.mp4';
+            startTime = 20; // Start at 20 seconds for contact section
+            break;
+        default:
+            newSrc = 'videos/travis-home.mp4';
+            startTime = 0;
+    }
+    
+    // Only update if source has changed
+    if (videoSource.src.indexOf(newSrc) === -1) {
+        console.log("Changing background video to:", newSrc);
+        videoSource.src = newSrc;
+        backgroundVideo.load();
+        
+        // Set the current time after the video has loaded enough data
+        backgroundVideo.addEventListener('loadedmetadata', function onceLoaded() {
+            backgroundVideo.currentTime = startTime;
+            backgroundVideo.play().catch(function(error) {
+                console.log("Error playing video:", error);
+            });
+            backgroundVideo.style.opacity = '1';
+            backgroundVideo.removeEventListener('loadedmetadata', onceLoaded);
+        });
+    } else {
+        // If it's the same video, just make sure it's playing and visible
+        backgroundVideo.play().catch(function(error) {
+            console.log("Error playing video:", error);
+        });
+        backgroundVideo.style.opacity = '1';
+    }
+}
